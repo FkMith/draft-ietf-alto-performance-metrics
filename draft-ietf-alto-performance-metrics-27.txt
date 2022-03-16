@@ -66,7 +66,7 @@ Status of This Memo
    Internet-Drafts are working documents of the Internet Engineering
    Task Force (IETF).  Note that other groups may also distribute
    working documents as Internet-Drafts.  The list of current Internet-
-   Drafts is at https://datatracker.ietf.org/drafts/current/.
+   Drafts is at http://datatracker.ietf.org/drafts/current/.
 
    Internet-Drafts are draft documents valid for a maximum of six months
    and may be updated, replaced, or obsoleted by other documents at any
@@ -82,7 +82,7 @@ Copyright Notice
 
    This document is subject to BCP 78 and the IETF Trust's Legal
    Provisions Relating to IETF Documents
-   (https://trustee.ietf.org/license-info) in effect on the date of
+   (http://trustee.ietf.org/license-info) in effect on the date of
    publication of this document.  Please review these documents
    carefully, as they describe your rights and restrictions with respect
    to this document.  Code Components extracted from this document must
@@ -1813,7 +1813,6 @@ Internet-Draft        ALTO Performance Cost Metrics           March 2022
    | tput            | See Section 4.1    |
    | bw-residual     | See Section 4.2    |
    | bw-available    | See Section 4.3    |
-   | bw-utilized     | See Section 4.4    |
    +-----------------+--------------------+
 
    This document requests the creation of the "ALTO Cost Source
@@ -1841,7 +1840,8 @@ Internet-Draft        ALTO Performance Cost Metrics           March 2022
 
    o  Identifier: The name of the desired ALTO cost source type.
 
-
+   o  Intended Semantics: ALTO cost source type carry with them
+      semantics to guide their usage by ALTO clients.  Hence, a document
 
 
 
@@ -1850,8 +1850,6 @@ Wu, et al.             Expires September 17, 2022              [Page 33]
 Internet-Draft        ALTO Performance Cost Metrics           March 2022
 
 
-   o  Intended Semantics: ALTO cost source type carry with them
-      semantics to guide their usage by ALTO clients.  Hence, a document
       defining a new type should provide guidance to both ALTO service
       providers and applications utilizing ALTO clients as to how values
       of the registered ALTO endpoint property should be interpreted.
@@ -1889,14 +1887,16 @@ Internet-Draft        ALTO Performance Cost Metrics           March 2022
 9.1.  Normative References
 
    [I-D.ietf-tcpm-rfc8312bis]
-              Xu, L., Ha, S., Rhee, I., Goel, V., and L. Eggert, "CUBIC
+              University of Nebraska-Lincoln, University of Colorado at
+              Boulder, Bowery Farming, Apple Inc., and NetApp, "CUBIC
               for Fast and Long-Distance Networks", draft-ietf-tcpm-
               rfc8312bis-07 (work in progress), March 2022.
 
    [IANA-IPPM]
-              IANA, "Performance Metrics Registry,
+              IANA, , "Performance Metrics Registry,
               https://www.iana.org/assignments/performance-metrics/
               performance-metrics.xhtml".
+
 
 
 
@@ -1907,27 +1907,27 @@ Internet-Draft        ALTO Performance Cost Metrics           March 2022
 
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
-              Requirement Levels", BCP 14, RFC 2119,
-              DOI 10.17487/RFC2119, March 1997,
-              <https://www.rfc-editor.org/info/rfc2119>.
+              Requirement Levels", BCP 14, RFC 2119, DOI 10.17487/
+              RFC2119, March 1997, <https://www.rfc-editor.org/info/
+              rfc2119>.
 
-   [RFC2818]  Rescorla, E., "HTTP Over TLS", RFC 2818,
-              DOI 10.17487/RFC2818, May 2000,
-              <https://www.rfc-editor.org/info/rfc2818>.
+   [RFC2818]  Rescorla, E., "HTTP Over TLS", RFC 2818, DOI 10.17487/
+              RFC2818, May 2000, <https://www.rfc-editor.org/info/
+              rfc2818>.
 
    [RFC3630]  Katz, D., Kompella, K., and D. Yeung, "Traffic Engineering
-              (TE) Extensions to OSPF Version 2", RFC 3630,
-              DOI 10.17487/RFC3630, September 2003,
-              <https://www.rfc-editor.org/info/rfc3630>.
+              (TE) Extensions to OSPF Version 2", RFC 3630, DOI
+              10.17487/RFC3630, September 2003, <https://www.rfc-
+              editor.org/info/rfc3630>.
 
    [RFC5305]  Li, T. and H. Smit, "IS-IS Extensions for Traffic
               Engineering", RFC 5305, DOI 10.17487/RFC5305, October
               2008, <https://www.rfc-editor.org/info/rfc5305>.
 
    [RFC6390]  Clark, A. and B. Claise, "Guidelines for Considering New
-              Performance Metric Development", BCP 170, RFC 6390,
-              DOI 10.17487/RFC6390, October 2011,
-              <https://www.rfc-editor.org/info/rfc6390>.
+              Performance Metric Development", BCP 170, RFC 6390, DOI
+              10.17487/RFC6390, October 2011, <https://www.rfc-
+              editor.org/info/rfc6390>.
 
    [RFC7285]  Alimi, R., Ed., Penno, R., Ed., Yang, Y., Ed., Kiesel, S.,
               Previdi, S., Roome, W., Shalunov, S., and R. Woundy,
@@ -1950,9 +1950,9 @@ Internet-Draft        ALTO Performance Cost Metrics           March 2022
               May 2017, <https://www.rfc-editor.org/info/rfc8174>.
 
    [RFC8259]  Bray, T., Ed., "The JavaScript Object Notation (JSON) Data
-              Interchange Format", STD 90, RFC 8259,
-              DOI 10.17487/RFC8259, December 2017,
-              <https://www.rfc-editor.org/info/rfc8259>.
+              Interchange Format", STD 90, RFC 8259, DOI 10.17487/
+              RFC8259, December 2017, <https://www.rfc-editor.org/info/
+              rfc8259>.
 
 
 
@@ -2002,9 +2002,9 @@ Internet-Draft        ALTO Performance Cost Metrics           March 2022
               Transactions on Networking July, 2020.
 
    [RFC2330]  Paxson, V., Almes, G., Mahdavi, J., and M. Mathis,
-              "Framework for IP Performance Metrics", RFC 2330,
-              DOI 10.17487/RFC2330, May 1998,
-              <https://www.rfc-editor.org/info/rfc2330>.
+              "Framework for IP Performance Metrics", RFC 2330, DOI
+              10.17487/RFC2330, May 1998, <https://www.rfc-
+              editor.org/info/rfc2330>.
 
    [RFC2681]  Almes, G., Kalidindi, S., and M. Zekauskas, "A Round-trip
               Delay Metric for IPPM", RFC 2681, DOI 10.17487/RFC2681,
@@ -2019,9 +2019,9 @@ Internet-Draft        ALTO Performance Cost Metrics           March 2022
 
 
    [RFC3393]  Demichelis, C. and P. Chimento, "IP Packet Delay Variation
-              Metric for IP Performance Metrics (IPPM)", RFC 3393,
-              DOI 10.17487/RFC3393, November 2002,
-              <https://www.rfc-editor.org/info/rfc3393>.
+              Metric for IP Performance Metrics (IPPM)", RFC 3393, DOI
+              10.17487/RFC3393, November 2002, <https://www.rfc-
+              editor.org/info/rfc3393>.
 
    [RFC5357]  Hedayat, K., Krzanowski, R., Morton, A., Yum, K., and J.
               Babiarz, "A Two-Way Active Measurement Protocol (TWAMP)",
@@ -2035,9 +2035,9 @@ Internet-Draft        ALTO Performance Cost Metrics           March 2022
 
    [RFC7971]  Stiemerling, M., Kiesel, S., Scharf, M., Seidel, H., and
               S. Previdi, "Application-Layer Traffic Optimization (ALTO)
-              Deployment Considerations", RFC 7971,
-              DOI 10.17487/RFC7971, October 2016,
-              <https://www.rfc-editor.org/info/rfc7971>.
+              Deployment Considerations", RFC 7971, DOI 10.17487/
+              RFC7971, October 2016, <https://www.rfc-editor.org/info/
+              rfc7971>.
 
 Authors' Addresses
 

@@ -1978,7 +1978,6 @@ Content-Type: application/alto-endpointcost+json
 | tput            | See Section 4.1    |
 | bw-residual     | See Section 4.2    |
 | bw-available    | See Section 4.3    |
-| bw-utilized     | See Section 4.4    |
 +-----------------+--------------------+
 </artwork>
       </figure>
