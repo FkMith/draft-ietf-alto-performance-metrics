@@ -1,0 +1,2249 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSPY v5 rel. 3 U (http://www.xmlspy.com)
+     by Daniel M Kohn (private) -->
+<!DOCTYPE rfc SYSTEM "rfc2629.dtd">
+<rfc category="std" docName="draft-ietf-alto-performance-metrics-27"
+     ipr="trust200902">
+  <?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
+
+  <?rfc toc="yes" ?>
+
+  <?rfc symrefs="yes" ?>
+
+  <?rfc sortrefs="yes"?>
+
+  <?rfc iprnotified="no" ?>
+
+  <?rfc strict="yes" ?>
+
+  <front>
+    <title abbrev="ALTO Performance Cost Metrics">ALTO Performance Cost
+    Metrics</title>
+
+    <author fullname="Qin Wu" initials="Q." surname="Wu">
+      <organization>Huawei</organization>
+
+      <address>
+        <postal>
+          <street>101 Software Avenue, Yuhua District</street>
+
+          <city>Nanjing</city>
+
+          <region>Jiangsu</region>
+
+          <code>210012</code>
+
+          <country>China</country>
+        </postal>
+
+        <email>bill.wu@huawei.com</email>
+      </address>
+    </author>
+
+    <author fullname="Y. Richard Yang" initials="Y." surname="Yang">
+      <organization>Yale University</organization>
+
+      <address>
+        <postal>
+          <street>51 Prospect St</street>
+
+          <city>New Haven</city>
+
+          <region>CT</region>
+
+          <code>06520</code>
+
+          <country>United States of America</country>
+        </postal>
+
+        <email>yry@cs.yale.edu</email>
+      </address>
+    </author>
+
+    <author fullname="Young Lee" initials="Y." surname="Lee">
+      <organization>Samsung</organization>
+
+      <address>
+        <email>young.lee@gmail.com</email>
+      </address>
+    </author>
+
+    <author fullname="Dhruv Dhody" initials="D." surname="Dhody">
+      <organization>Huawei</organization>
+
+      <address>
+        <postal>
+          <street>Leela Palace</street>
+
+          <city>Bangalore</city>
+
+          <region>Karnataka</region>
+
+          <code>560008</code>
+
+          <country>India</country>
+        </postal>
+
+        <email>dhruv.ietf@gmail.com</email>
+      </address>
+    </author>
+
+    <author fullname="Sabine Randriamasy" initials="S." surname="Randriamasy">
+      <organization>Nokia Bell Labs</organization>
+
+      <address>
+        <postal>
+          <street>Route de Villejust</street>
+
+          <city>Nozay</city>
+
+          <region/>
+
+          <code>91460</code>
+
+          <country>France</country>
+        </postal>
+
+        <email>sabine.randriamasy@nokia-bell-labs.com</email>
+      </address>
+    </author>
+
+    <author fullname="Luis Miguel Contreras Murillo" initials="L."
+            surname="Contreras">
+      <organization>Telefonica</organization>
+
+      <address>
+        <postal>
+          <street/>
+
+          <city>Madrid</city>
+
+          <region/>
+
+          <code/>
+
+          <country>Spain</country>
+        </postal>
+
+        <email>luismiguel.contrerasmurillo@telefonica.com</email>
+      </address>
+    </author>
+
+    <date year="2022"/>
+
+    <area>TSV Area</area>
+
+    <workgroup>ALTO Working Group</workgroup>
+
+    <keyword>RFC</keyword>
+
+    <keyword>Request for Comments</keyword>
+
+    <keyword>I-D</keyword>
+
+    <keyword>Internet-Draft</keyword>
+
+    <keyword>JavaScript Object Notation, Application-Layer Traffic
+    Optimization</keyword>
+
+    <abstract>
+      <t>The cost metric is a basic concept in Application-Layer Traffic
+      Optimization (ALTO), and different applications may use different types
+      of cost metrics. Since the ALTO base protocol (RFC 7285) defines only a
+      single cost metric (namely, the generic "routingcost" metric), if an
+      application wants to issue a cost map or an endpoint cost request in
+      order to identify a resource provider that offers better performance
+      metrics (e.g., lower delay or loss rate), the base protocol does not
+      define the cost metric to be used.</t>
+
+      <t>This document addresses this issue by extending the specification to
+      provide a variety of network performance metrics, including network
+      delay, delay variation (a.k.a, jitter), packet loss rate, hop count, and
+      bandwidth.</t>
+
+      <t>There are multiple sources (e.g., estimation based on measurements or
+      service-level agreement) to derive a performance metric. This document
+      introduces an additional "cost-context" field to the ALTO "cost-type"
+      field to convey the source of a performance metric.</t>
+    </abstract>
+
+    <note title="Requirements Language">
+      <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+      "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
+      "OPTIONAL" in this document are to be interpreted as described in BCP 14
+      <xref target="RFC2119"/><xref target="RFC8174"/> when, and only when,
+      they appear in all capitals, as shown here.</t>
+    </note>
+  </front>
+
+  <middle>
+    <section anchor="secintro" title="Introduction">
+      <t>Application-Layer Traffic Optimization (ALTO) provides a means for
+      network applications to obtain network information so that the
+      applications can identify efficient application-layer traffic patterns
+      using the networks. Cost metrics are used in both the ALTO cost map
+      service and the ALTO endpoint cost service in the ALTO base protocol
+      <xref target="RFC7285"/>.</t>
+
+      <t>Since different applications may use different cost metrics, the ALTO
+      base protocol introduces an ALTO Cost Metric Registry (Section 14.2 of
+      <xref target="RFC7285"/>) as a systematic mechanism to allow different
+      metrics to be specified. For example, a delay-sensitive application may
+      want to use latency related metrics, and a bandwidth-sensitive
+      application may want to use bandwidth related metrics. However, the ALTO
+      base protocol has registered only a single cost metric, i.e., the
+      generic "routingcost" metric (Section 14.2 of <xref target="RFC7285"/>);
+      no latency or bandwidth related metrics are defined in the base
+      protocol.</t>
+
+      <t>This document registers a set of new cost metrics (Table 1) to allow
+      applications to determine "where" to connect based on network
+      performance criteria including delay and bandwidth related metrics.</t>
+
+      <figure>
+        <artwork>
++--------------------+-------------+--------------------------------+
+| Metric             | Definition  |  Semantics Based On            |
+|                    | in this doc |                                |
++--------------------+-------------+--------------------------------+
+| One-way Delay      | Section 3.1 | Base: [RFC7471,8570,8571]      |
+|                    |             |  sum Unidirectional Delay      |
+| Round-trip Delay   | Section 3.2 | Base: Sum of two directions    |
+|                    |             |  from above                    |
+| Delay Variation    | Section 3.3 | Base: [RFC7471,8570,8571]      |
+|                    |             |  sum of Unidirectional Delay   |
+|                    |             |         Variation              |
+| Loss Rate          | Section 3.4 | Base: [RFC7471,8570,8571]      |
+|                    |             |  aggr Unidirectional Link Loss |
+| Residual Bandwidth | Section 4.2 | Base: [RFC7471,8570,8571]      |
+|                    |             |  min Unidirectional Residual BW|
+| Available Bandwidth| Section 4.3 | Base: [RFC7471,8570,8571]      |
+|                    |             |  min Unidirectional Avail. BW  |
+|                    |             |                                |
+| TCP Throughput     | Section 4.1 | [RFC8312bis]                   |
+|                    |             |                                |
+| Hop Count          | Section 3.5 | [RFC7285]                      |
++--------------------+-------------+--------------------------------+
+   Table 1. Cost Metrics Defined in this Document.
+        </artwork>
+      </figure>
+
+      <t>The first 6 metrics listed in Table 1 (i.e., One-way Delay,
+      Round-trip Delay, Delay Variation, Loss Rate, Residual Bandwidth, and
+      Available Bandwidth) are derived from the set of traffic engineering
+      performance metrics commonly defined in OSPF <xref target="RFC3630"/>,
+      <xref target="RFC7471"/>; IS-IS <xref target="RFC5305"/>, <xref
+      target="RFC8570"/>; and BGP-LS <xref target="RFC8571"/>. Deriving ALTO
+      cost performance metrics from existing network-layer traffic engineering
+      performance metrics, to expose to application-layer traffic
+      optimization, can be a typical mechanism by network operators to deploy
+      ALTO <xref target="RFC7971"/>, <xref target="FlowDirector"/>. This
+      document defines the base semantics of these metrics by extending them
+      from link metrics to end-to-end metrics for ALTO. The "Semantics Based
+      On" column specifies at a high level how the end-to-end metric is
+      computed from link metrics; the details will be specified in the
+      following sections.</t>
+
+      <t>The common metrics Min/Max Unidirectional Delay defined in
+      [RFC7471,RFC8570,RFC8571] and Max Link Bandwidth defined in
+      [RFC3630,RFC5305] are not listed in Table 1 because they can be handled
+      by applying the statistical operators defined in this document. The
+      metrics related with utilized bandwidth and reservable bandwidth (i.e.,
+      Max Reservable BW and Unreserved BW defined in [RFC3630,RFC5305]) are
+      outside the scope of this document.</t>
+
+      <t>The 7th metric (the estimated TCP-flow throughput metric) provides an
+      estimation of the bandwidth of a TCP flow, using TCP throughput
+      modeling, to support use cases of adaptive applications <xref
+      target="Prophet"/>, <xref target="G2"/>.</t>
+
+      <t>The 8th metric (the hop count metric) in Table 1 is mentioned in the
+      ALTO base protocol [RFC7285], but not defined, and this document defines
+      it to be complete.</t>
+
+      <t>These 8 performance metrics can be classified into two categories:
+      those derived from the performance of individual packets (i.e., One-way
+      Delay, Round-trip Delay, Delay Variation, Loss Rate, and Hop Count), and
+      those related to bandwidth/throughput (Residual bandwidth, and Available
+      Bandwidth, and TCP throughput). These two categories are defined in
+      <xref target="secpktmetrics"/> and <xref target="secbwmetrics"/>
+      respectively. Note that all metrics except Round-trip Delay are
+      unidirectional. An ALTO client will need to query both directions if
+      needed.</t>
+
+      <t>The purpose of this document is to ensure proper usage of these 8
+      performance metrics in the context of ALTO. This document follows the
+      guideline defined in Section 14.2 of the ALTO base protocol <xref
+      target="RFC7285"/> on registering ALTO cost metrics. Hence, it specifies
+      the identifier, the intended semantics, and the security considerations
+      of each one of the metrics specified in Table 1.</t>
+
+      <t>The definitions of the intended semantics of the metrics tend to be
+      coarse-grained, for guidance only, and they may work well for ALTO. On
+      the other hand, a performance measurement framework, such as the [IPPM]
+      framework, may provide more details in defining a performance metric.
+      This document introduces a mechanism called "cost-context" to provide
+      additional details, when they are available; see <xref
+      target="sec2"/>.</t>
+
+      <!--
+      <t>Additionally, future versions of this document may define network
+      metric values that stem from both measurements and provider policies
+      such as many metrics related to end-to-end path bandwidth.</t>
+     -->
+
+      <t>Following the ALTO base protocol, this document uses JSON to specify
+      the value type of each defined metric. See <xref target="RFC8259"/> for
+      JSON data type specification. In particular, <xref target="RFC7285"/>
+      specifies that cost values should be assumed by default as JSONNumber.
+      When defining the value representation of each metric in Table 1, this
+      document conforms to [RFC7285], but specifies additional, generic
+      constraints on valid JSONNumbers for each metric. For example, each new
+      metric in Table 1 will be specified as non-negative (&gt;= 0); Hop Count
+      is specified to be an integer.</t>
+
+      <t>An ALTO server may provide only a subset of the metrics described in
+      this document. For example, those that are subject to privacy concerns
+      should not be provided to unauthorized ALTO clients. Hence, all cost
+      metrics defined in this document are optional; not all of them need to
+      be exposed to a given application. When an ALTO server supports a cost
+      metric defined in this document, it announces the metric in its
+      information resource directory (IRD) as defined in Section 9.2 of <xref
+      target="RFC7285"/>.</t>
+
+      <t>An ALTO server introducing these metrics should consider related
+      security issues. As a generic security consideration on the reliability
+      and trust in the exposed metric values, applications SHOULD rapidly give
+      up using ALTO-based guidance if they detect that the exposed information
+      does not preserve their performance level or even degrades it. <xref
+      target="secsecconsider"/> discusses security considerations in more
+      detail.</t>
+
+      <!-- <t>The definitions of a set of cost metrics can allow us to extend the
+      ALTO base protocol (e.g., allowing output and constraints use different
+      cost metrics), but such extensions are not in the scope of this
+      document.</t> -->
+    </section>
+
+    <section anchor="sec2" title="Performance Metric Attributes">
+      <t>The definitions of the metrics in this document are coarse-grained,
+      based on network-layer traffic engineering performance metrics, for
+      guidance only. A fine-grained framework specified in <xref
+      target="RFC6390"/> requires that the fine-grained specification of a
+      network performance metric include 6 components: (i) Metric Name, (ii)
+      Metric Description, (iii) Method of Measurement or Calculation, (iv)
+      Units of Measurement, (v) Measurement Points, and (vi) Measurement
+      Timing. Requiring that an ALTO server provides precise, fine-grained
+      values for all 6 components for each metric that it exposes may not be
+      feasible or necessary for all ALTO use cases. For example, an ALTO
+      server computing its metrics from network-layer traffic-engineering
+      performance metrics may not have information about the method of
+      measurement or calculation (e.g., measured traffic patterns).</t>
+
+      <t>To address the issue and realize ALTO use cases, for metrics in Table
+      1, this document defines performance metric identifiers which can be
+      used in the ALTO protocol with well-defined (i) Metric Name, (ii) Metric
+      Description, (iv) Units of Measurement, and (v) Measurement Points,
+      which are always specified by the specific ALTO services; for example,
+      endpoint cost service is between the two endpoints. Hence, the ALTO
+      performance metric identifiers provide basic metric attributes.</t>
+
+      <t>To allow the flexibility of allowing an ALTO server to provide
+      fine-grained information such as Method of Measurement or Calculation,
+      according to its policy and use cases, this document introduces context
+      information so that the server can provide these additional details.</t>
+
+      <section anchor="meta"
+               title="Performance Metric Context: &quot;cost-context&quot;">
+        <t>The core additional details of a performance metric specify "how"
+        the metric is obtained. This is referred to as the source of the
+        metric. Specifically, this document defines three types of
+        coarse-grained metric information sources: "nominal", and "sla"
+        (service level agreement), and "estimation".</t>
+
+        <t>For a given type of source, precise interpretation of a performance
+        metric value can depend on specific measurement and computation
+        parameters.</t>
+
+        <t>To make it possible to specify the source and the aforementioned
+        parameters, this document introduces an optional "cost-context" field
+        to the "cost-type" field defined by the ALTO base protocol (Section
+        10.7 of <xref target="RFC7285"/>) as the following:</t>
+
+        <figure>
+          <artwork>            
+    object {
+      CostMetric   cost-metric;
+      CostMode     cost-mode;
+      [CostContext cost-context;]
+      [JSONString  description;]
+    } CostType;
+
+    object {
+      JSONString    cost-source;
+      [JSONValue    parameters;]
+    } CostContext;                   
+    </artwork>
+        </figure>
+
+        <t>"cost-context" will not be used as a key to distinguish among
+        performance metrics. Hence, an ALTO information resource MUST NOT
+        announce multiple CostType with the same "cost-metric", "cost-mode"
+        and "cost-context". They must be placed into different information
+        resources.</t>
+
+        <t>The "cost-source" field of the "cost-context" field is defined as a
+        string consisting of only US-ASCII alphanumeric characters
+        (U+0030-U+0039, U+0041-U+005A, and U+0061-U+007A). The cost-source is
+        used in this document to indicate a string of this format.</t>
+
+        <t>As mentioned above, this document defines three values for
+        "cost-source": "nominal", "sla", and "estimation". The "cost-source"
+        field of the "cost-context" field MUST be one registered in "ALTO Cost
+        Source Registry" (Section 7).</t>
+
+        <t>The "nominal" category indicates that the metric value is
+        statically configured by the underlying devices. Not all metrics have
+        reasonable "nominal" values. For example, throughput can have a
+        nominal value, which indicates the configured transmission rate of the
+        involved devices; latency typically does not have a nominal value.</t>
+
+        <t>The "sla" category indicates that the metric value is derived from
+        some commitment which this document refers to as service-level
+        agreement (SLA). Some operators also use terms such as "target" or
+        "committed" values. For an "sla" metric, it is RECOMMENDED that the
+        "parameters" field provide a link to the SLA definition.</t>
+
+        <t>The "estimation" category indicates that the metric value is
+        computed through an estimation process. An ALTO server may compute
+        "estimation" values by retrieving and/or aggregating information from
+        routing protocols (e.g., <xref target="RFC7471"/>, <xref
+        target="RFC8570"/>, <xref target="RFC8571"/>), traffic measurement
+        management tools (e.g., TWAMP <xref target="RFC5357"/>), and
+        measurement frameworks (e.g., IPPM), with corresponding operational
+        issues. An illustration of potential information flows used for
+        estimating these metrics is shown in Figure 1 below. <xref
+        target="secopconsider"/> discusses in more detail the operational
+        issues and how a network may address them. <figure>
+            <artwork>
+  +--------+   +--------+  +--------+
+  | Client |   | Client |  | Client |
+  +----^---+   +---^----+  +---^----+
+       |           |           |
+       +-----------|-----------+
+      North-Bound  |ALTO protocol
+    Interface (NBI)|
+                   |
+                +--+-----+  retrieval      +-----------+
+                |  ALTO  |&lt;----------------| Routing   |
+                | Server |  and aggregation|           |
+                |        |&lt;-------------+  | Protocols |
+                +--------+              |  +-----------+
+                                        |
+                                        |  +------------+
+                                        |  |Performance |
+                                        ---| Monitoring |
+                                           |  Tools     |
+                                           +------------+
+Figure 1. A framework to compute estimation to performance metrics
+          </artwork>
+          </figure></t>
+
+        <!--
+      <t>
+      A particular type of "estimation" is direct "import", which indicates that the metric value is imported directly from a specific existing protocol or system. Specifying "import" as the source instead of the more generic "estimation" may allow better tracking of information flow. For an "import" metric, it is RECOMMENDED that the "parameters" field provides details to the system from which raw data is imported.
+      In particular, one may notice that the set of end-to-end metrics defined in Table 1 has a large overlap 
+        with the set defined in [RFC8571], in the setting of IGP traffic 
+        engineering performance metrics for each link
+        (i.e., unidirectional link delay, min/max unidirectional link 
+        delay, unidirectional delay variation, unidirectional link loss, 
+        unidirectional residual bandwidth, unidirectional available bandwidth, 
+        unidirectional utilized bandwidth). Hence, an ALTO server may use "import" to indicate that
+        its end-to-end metrics are computed from link
+        metrics imported from [RFC8571].
+      </t>
+    -->
+
+        <t>There can be multiple choices in deciding the cost-source category.
+        It is the operator of an ALTO server who chooses the category. If a
+        metric does not include a "cost-source" value, the application MUST
+        assume that the value of "cost-source" is the most generic source,
+        i.e., "estimation".</t>
+      </section>
+
+      <section anchor="percentile" title="Performance Metric Statistics">
+        <t>The measurement of a performance metric often yields a set of
+        samples from an observation distribution (<xref
+        target="Prometheus"/>), instead of a single value. A statistical
+        operator is applied to the samples to obtain a value to be reported to
+        the client. Multiple statistical operators (e.g., min, median, and
+        max) are commonly being used.</t>
+
+        <t>Hence, this document extends the general US-ASCII alphanumeric cost
+        metric strings, formally specified as the CostMetric type defined in
+        Section 10.6 of [RFC7285], as follows:</t>
+
+        <t><list style="hanging">
+            <t>A cost metric string consists of a base metric identifier (or
+            base identifier for short) string, followed by an optional
+            statistical operator string, connected by the ASCII character
+            colon (':', U+003A), if the statistical operator string exists.
+            The total length of the cost metric string MUST NOT exceed 32, as
+            required by [RFC7285].</t>
+          </list></t>
+
+        <!--
+      </t>
+      <figure>
+        <artwork>
+          <![CDATA[
+  <metric-identifier> ::= <metric-base-identifier> [ '-' <stat> ]
+          ]]>            
+        </artwork>
+      </figure>
+      <t>where &lt;stat&gt; MUST be one of the following: </t>
+      -->
+
+        <t>The statistical operator string MUST be one of the following:</t>
+
+        <t><list style="hanging">
+            <t hangText="cur:"><vspace blankLines="1"/> the instantaneous
+            observation value of the metric from the most recent sample (i.e.,
+            the current value). <vspace blankLines="1"/></t>
+
+            <t
+            hangText="percentile, with letter 'p' followed by a number:"><vspace
+            blankLines="1"/> gives the percentile specified by the number
+            following the letter 'p'. The number MUST be a non-negative JSON
+            number in the range [0, 100] (i.e., greater than or equal to 0 and
+            less than or equal to 100), followed by an optional decimal part,
+            if a higher precision is needed. The decimal part should start
+            with the '.' separator (U+002E), and followed by a sequence of one
+            or more ASCII numbers between '0' and '9'. Assume this number is y
+            and consider the samples coming from a random variable X. Then the
+            metric returns x, such that the probability of X is less than or
+            equal to x, i.e., Prob(X &lt;= x), = y/100. For example,
+            delay-ow:p99 gives the 99% percentile of observed one-way delay;
+            delay-ow:p99.9 gives the 99.9% percentile. Note that some systems
+            use quantile, which is in the range [0, 1]. When there is a more
+            common form for a given percentile, it is RECOMMENDED that the
+            common form be used; that is, instead of p0, use min; instead of
+            p50, use median; instead of p100, use max. <vspace
+            blankLines="1"/></t>
+
+            <t hangText="min:"><vspace blankLines="1"/> the minimal value of
+            the observations. <vspace blankLines="1"/></t>
+
+            <t hangText="max:"><vspace blankLines="1"/> the maximal value of
+            the observations. <vspace blankLines="1"/></t>
+
+            <t hangText="median:"><vspace blankLines="1"/> the mid-point
+            (i.e., p50) of the observations. <vspace blankLines="1"/></t>
+
+            <t hangText="mean:"><vspace blankLines="1"/> the arithmetic mean
+            value of the observations. <vspace blankLines="1"/></t>
+
+            <t hangText="stddev:"><vspace blankLines="1"/> the standard
+            deviation of the observations. <vspace blankLines="1"/></t>
+
+            <t hangText="stdvar:"><vspace blankLines="1"/> the standard
+            variance of the observations. <vspace blankLines="1"/></t>
+          </list></t>
+
+        <t>Examples of cost metric strings then include "delay-ow",
+        "delay-ow:min", "delay-ow:p99", where "delay-ow" is the base metric
+        identifier string; "min" and "p99" are example statistical operator
+        strings.</t>
+
+        <t>If a cost metric string does not have the optional statistical
+        operator string, the statistical operator SHOULD be interpreted as the
+        default statistical operator in the definition of the base metric. If
+        the definition of the base metric does not provide a definition for
+        the default statistical operator, the metric MUST be considered as the
+        median value.</t>
+
+        <t>Note that RFC 7258 limits the overall cost metric identifier to 32
+        characters. The cost metric variants with statistical operator
+        suffixes defined by this document are also subject to the same overall
+        32-character limit, so certain combinations of (long) base metric
+        identifier and statistical operator will not be representable. If such
+        a situation arises, it could be addressed by defining a new base
+        metric identifier that is an "alias" of the desired base metric, with
+        identical semantics and just a shorter name.</t>
+      </section>
+    </section>
+
+    <!-- End of metric attributes -->
+
+    <section anchor="secpktmetrics" title="Packet Performance Metrics ">
+      <t>This section introduces ALTO network performance metrics on one way
+      delay, round-trip delay, delay variation, packet loss rate, and hop
+      count. They measure the "quality of experience" of the stream of packets
+      sent from a resource provider to a resource consumer. The measures of
+      each individual packet (pkt) can include the delay from the time when
+      the packet enters the network to the time when the packet leaves the
+      network (pkt.delay); whether the packet is dropped before reaching the
+      destination (pkt.dropped); the number of network hops that the packet
+      traverses (pkt.hopcount). The semantics of the performance metrics
+      defined in this section are that they are statistics computed from these
+      measures; for example, the x-percentile of the one-way delay is the
+      x-percentile of the set of delays {pkt.delay} for the packets in the
+      stream.</t>
+
+      <section title="Cost Metric: One-Way Delay (delay-ow)">
+        <section title="Base Identifier">
+          <t>The base identifier for this performance metric is
+          "delay-ow".</t>
+        </section>
+
+        <section title="Value Representation">
+          <t>The metric value type is a single 'JSONNumber' type value
+          conforming to the number specification of Section 6 of [RFC8259].
+          The unit is expressed in microseconds. Hence, the number can be a
+          floating point number to express delay that is smaller than
+          microseconds. The number MUST be non-negative.</t>
+        </section>
+
+        <!--
+        <t><list style="hanging">
+            <t hangText="Metric name:">
+              <vspace blankLines="1"/>One Way Delay<vspace blankLines="1"/>
+            </t>
+
+            <t hangText="Metric Identifier:">
+              <vspace blankLines="1"/>owdelay<vspace blankLines="1"/>
+            </t>
+        </list></t>
+        -->
+
+        <section title="Intended Semantics and Use">
+          <t>Intended Semantics: To specify the temporal and spatial
+          aggregated delay of a stream of packets from the specified source to
+          the specified destination. The base semantics of the metric is the
+          Unidirectional Delay metric defined in [RFC8571,RFC8570,RFC7471],
+          but instead of specifying the delay for a link, it is the (temporal)
+          aggregation of the link delays from the source to the destination. A
+          non-normative reference definition of end-to-end one-way delay is
+          <xref target="RFC7679"/>. The spatial aggregation level is specified
+          in the query context, e.g., provider-defined identifier (PID) to
+          PID, or endpoint to endpoint, where PID is defined in Section 5.1 of
+          [RFC7285].</t>
+
+          <t>Use: This metric could be used as a cost metric constraint
+          attribute or as a returned cost metric in the response.</t>
+
+          <figure>
+            <artwork>Example 1: Delay value on source-destination endpoint pairs
+
+POST /endpointcost/lookup HTTP/1.1
+Host: alto.example.com
+Content-Length: 239
+Content-Type: application/alto-endpointcostparams+json
+Accept: 
+  application/alto-endpointcost+json,application/alto-error+json
+
+{
+  "cost-type": {
+    "cost-mode":   "numerical",
+    "cost-metric": "delay-ow"
+  },
+  "endpoints": {
+    "srcs": [
+      "ipv4:192.0.2.2"
+    ],
+    "dsts": [
+      "ipv4:192.0.2.89",
+      "ipv4:198.51.100.34"
+    ]
+  }
+}
+</artwork>
+          </figure>
+
+          <figure>
+            <artwork>
+HTTP/1.1 200 OK
+Content-Length: 247
+Content-Type: application/alto-endpointcost+json
+
+{
+  "meta": {
+    "cost-type": {
+      "cost-mode":   "numerical",
+      "cost-metric": "delay-ow"
+    }
+  },
+  "endpoint-cost-map": {
+    "ipv4:192.0.2.2": {
+      "ipv4:192.0.2.89":    10,
+      "ipv4:198.51.100.34": 20
+    }
+  }
+}
+</artwork>
+          </figure>
+
+          <t>Comment: Since the "cost-type" does not include the "cost-source"
+          field, the values are based on "estimation". Since the identifier
+          does not include the statistical operator string component, the
+          values will represent median values.</t>
+        </section>
+
+        <section anchor="ccspec-ow"
+                 title="Cost-Context Specification Considerations">
+          <t>"nominal": Typically network one-way delay does not have a
+          nominal value.</t>
+
+          <t>"sla": Many networks provide delay-related parameters in their
+          application-level SLAs. It is RECOMMENDED that the "parameters"
+          field of an "sla" one-way delay metric include a link (i.e., a field
+          named "link") providing an URI to the specification of SLA details,
+          if available. Such a specification can be either free text for
+          possible presentation to the user, or a formal specification. The
+          format of the specification is out of the scope of this
+          document.</t>
+
+          <!--
+          <t>"import": There can be multiple sources to import one-way delay. For example, if the import is from [RFC8571] (by using unidirectional link delay, min/max unidirectional link delay), it is RECOMMENDED that "parameters" provides "protocol" as a field and "RFC8571" as the value. During import, the server should be cognizant of potential issues when computing an end-to-end summary statistic from link statistics. Another example of an import source is the IPPM framework. For IPPM, it is RECOMMENDED that "parameters" provides "protocol" as a field and "ippm" as the value; see Section 4 of [I-D.ietf-ippm-initial-registry] for additional fields which can be specified for "ippm" in "parameters".
+          </t>
+          -->
+
+          <t>"estimation": The exact estimation method is out of the scope of
+          this document. There can be multiple sources to estimate one-way
+          delay. For example, the ALTO server may estimate the end-to-end
+          delay by aggregation of routing protocol link metrics; the server
+          may also estimate the delay using active, end-to-end measurements,
+          for example, using the IPPM framework <xref target="RFC2330"/>.</t>
+
+          <t>If the estimation is computed by aggregation of routing protocol
+          link metrics (e.g., OSPF <xref target="RFC7471"/>, IS-IS <xref
+          target="RFC8570"/>, or BGP-LS <xref target="RFC8571"/>)
+          Unidirectional Delay link metrics, it is RECOMMENDED that the
+          "parameters" field of an "estimation" one-way delay metric include
+          the following information: (1) the RFC defining the routing protocol
+          metrics (e.g., https://www.rfc-editor.org/info/rfc7471 for RFC7471
+          derived metrics); (2) configurations of the routing link metrics
+          such as configured intervals; and (3) the aggregation method from
+          link metrics to end-to-end metrics. During aggregation from link
+          metrics to the end-to-end metric, the server should be cognizant of
+          potential issues when computing an end-to-end summary statistic from
+          link statistics. The default end-to-end average one-way delay is the
+          sum of average link one-way delays. If an ALTO server provides the
+          min and max statistical operators for the one-way delay metric, the
+          values can be computed directly from the routing link metrics, as
+          [RFC7471,RFC8570,RFC8571] provide Min/Max Unidirectional Link
+          Delay.</t>
+
+          <t>If the estimation is from the IPPM measurement framework, it is
+          RECOMMEDED that the "parameters" field of an "estimation" one-way
+          delay metric includes the following information: the URI to the URI
+          field of the IPPM metric defined in the IPPM performance metric
+          <xref target="IANA-IPPM"/> registry (e.g.,
+          https://www.iana.org/assignments/performance-metrics/OWDelay_Active_IP-UDP-Poisson-Payload250B_RFC8912sec7_Seconds_95Percentile).
+          The IPPM metric MUST be one-way delay (i.e., IPPM OWDelay* metrics).
+          The statistical operator of the ALTO metric MUST be consistent with
+          the IPPM statistical property (e.g., 95-th percentile).</t>
+
+          <!--
+          <t><list style="hanging">
+              <t hangText="Method of Measurement or Calculation:"><vspace
+              blankLines="1"/>See section 8.3 of
+              [I-D.ietf-ippm-initial-registry] for potential measurement method.<vspace
+              blankLines="1"/></t>
+
+              <t
+              hangText="Measurement Point(s) with Potential Measurement Domain:"><vspace
+              blankLines="1"/>See Section 4.1, Data sources for potential data sources.<vspace
+              blankLines="1"/></t>
+
+              <t hangText="Measurement Timing:"><vspace blankLines="1"/>See
+              section 8.3.5 of [I-D.ietf-ippm-initial-registry] for potential measurement
+              timing considerations.<vspace blankLines="1"/></t>
+          </list></t>
+          -->
+        </section>
+      </section>
+
+      <section title="Cost Metric: Round-trip Delay (delay-rt)">
+        <section title="Base Identifier">
+          <t>The base identifier for this performance metric is
+          "delay-rt".</t>
+        </section>
+
+        <section title="Value Representation">
+          <t>The metric value type is a single 'JSONNumber' type value
+          conforming to the number specification of Section 6 of [RFC8259].
+          The number MUST be non-negative. The unit is expressed in
+          microseconds.</t>
+        </section>
+
+        <!--
+        <t><list style="hanging">
+            <t hangText="Metric name:">
+              <vspace blankLines="1"/>Round Trip Time<vspace blankLines="1"/>
+            </t>
+
+           <t hangText="Metric Identifier:">
+              <vspace blankLines="1"/>rtt<vspace blankLines="1"/>
+            </t>
+        </list></t>
+        -->
+
+        <section title="Intended Semantics and Use">
+          <t>Intended Semantics: To specify temporal and spatial aggregated
+          round-trip delay between the specified source and specified
+          destination. The base semantics is that it is the sum of one-way
+          delay from the source to the destination and the one-way delay from
+          the destination back to the source, where the one-way delay is
+          defined in Section 3.1. A non-normative reference definition of
+          end-to-end round-trip delay is <xref target="RFC2681"/>. The spatial
+          aggregation level is specified in the query context (e.g., PID to
+          PID, or endpoint to endpoint).</t>
+
+          <t>Note that it is possible for a client to query two one-way delays
+          (delay-ow) and then compute the round-trip delay. The server should
+          be cognizant of the consistency of values.</t>
+
+          <t>Use: This metric could be used either as a cost metric constraint
+          attribute or as a returned cost metric in the response.</t>
+
+          <figure>
+            <artwork> 
+Example 2: Round-trip Delay of source-destination endpoint pairs
+
+POST /endpointcost/lookup HTTP/1.1
+Host: alto.example.com
+Content-Length: 238
+Content-Type: application/alto-endpointcostparams+json
+Accept: 
+  application/alto-endpointcost+json,application/alto-error+json
+
+{
+  "cost-type": {
+    "cost-mode":   "numerical",
+    "cost-metric": "delay-rt"
+  },
+  "endpoints": {
+    "srcs": [
+      "ipv4:192.0.2.2"
+    ],
+    "dsts": [
+      "ipv4:192.0.2.89",
+      "ipv4:198.51.100.34"
+    ]
+  }
+}
+</artwork>
+          </figure>
+
+          <figure>
+            <artwork>
+HTTP/1.1 200 OK
+Content-Length: 245
+Content-Type: application/alto-endpointcost+json
+
+{
+  "meta": {
+    "cost-type": {
+      "cost-mode":   "numerical",
+      "cost-metric": "delay-rt"
+    }
+  },
+  "endpoint-cost-map": {
+    "ipv4:192.0.2.2": {
+      "ipv4:192.0.2.89":    4,
+      "ipv4:198.51.100.34": 3
+    }
+  }
+}
+
+</artwork>
+          </figure>
+        </section>
+
+        <!--
+        <section title="Measurement Considerations">
+          <t><list style="hanging">              
+            <t hangText="Method of Measurement or Calculation:"><vspace
+            blankLines="1"/>See section 4.3 of
+            [I-D.ietf-ippm-initial-registry] for potential measurement method. <vspace
+            blankLines="1"/></t>
+
+            <t
+            hangText="Measurement Point(s) with Potential Measurement Domain:"><vspace
+            blankLines="1"/>See section 4.1, Data sources.<vspace
+            blankLines="1"/></t>
+
+            <t hangText="Measurement Timing:"><vspace blankLines="1"/>See
+            section 4.3.5 of [I-D.ietf-ippm-initial-registry] for Measurement
+            Timing. <vspace blankLines="1"/></t>
+          </list></t>
+        </section>
+        
+        <section title="Measurement Considerations and Parameters"> 
+
+          <t>See Section 4 of [I-D.ietf-ippm-initial-registry] for measurement considerations and parameters which may be specified in "parameters". Note that the "parameters" field is an optional field providing non-normative information.
+          </t>
+        </section>
+        -->
+
+        <section title="Cost-Context Specification Considerations">
+          <t>"nominal": Typically network round-trip delay does not have a
+          nominal value.</t>
+
+          <t>"sla": See the "sla" entry in <xref target="ccspec-ow"/>.</t>
+
+          <!--
+          <t>"import": There can be multiple sources to import round-trip delay. If the import is from [RFC8571] (by using unidirectional link delay, min/max unidirectional link delay), it is RECOMMENDED that "parameters" provides "protocol" as a field and "RFC8571" as the value; see <xref target="ccspec-ow" /> for discussions on summing up link metrics to obtain end-to-end metrics. If the import is from the IPPM framework, it is RECOMMENDED that "parameters" provides "protocol" as a field and "ippm" as the value; see Section 4 of [I-D.ietf-ippm-initial-registry] for additional fields which can be specified for "ippm" in "parameters".
+          </t>
+          -->
+
+          <t>"estimation": See the "estimation" entry in <xref
+          target="ccspec-ow"/>. For estimation by aggregation of routing
+          protocol link metrics, the aggregation should include all links from
+          the source to the destination and then back to the source; for
+          estimation using IPPM, the IPPM metric MUST be round-trip delay
+          (i.e., IPPM RTDelay* metrics). The statistical operator of the ALTO
+          metric MUST be consistent with the IPPM statistical property (e.g.,
+          95-th percentile).</t>
+
+          <!--
+          <t><list style="hanging">
+              <t hangText="Method of Measurement or Calculation:"><vspace
+              blankLines="1"/>See section 8.3 of
+              [I-D.ietf-ippm-initial-registry] for potential measurement method.<vspace
+              blankLines="1"/></t>
+
+              <t
+              hangText="Measurement Point(s) with Potential Measurement Domain:"><vspace
+              blankLines="1"/>See Section 4.1, Data sources for potential data sources.<vspace
+              blankLines="1"/></t>
+
+              <t hangText="Measurement Timing:"><vspace blankLines="1"/>See
+              section 8.3.5 of [I-D.ietf-ippm-initial-registry] for potential measurement
+              timing considerations.<vspace blankLines="1"/></t>
+          </list></t>
+          -->
+        </section>
+      </section>
+
+      <section title="Cost Metric: Delay Variation (delay-variation)">
+        <!--
+        <t><list style="hanging">
+            <t hangText="Metric name:">
+              <vspace blankLines="1"/>Packet Delay Variation<vspace blankLines="1"/>
+            </t>
+
+            <t hangText="Metric Identifier:">
+              <vspace blankLines="1"/>pdv<vspace blankLines="1"/>
+            </t>
+        </list></t>
+        -->
+
+        <section title="Base Identifier">
+          <t>The base identifier for this performance metric is
+          "delay-variation".</t>
+        </section>
+
+        <section title="Value Representation">
+          <t>The metric value type is a single 'JSONNumber' type value
+          conforming to the number specification of Section 6 of [RFC8259].
+          The number MUST be non-negative. The unit is expressed in
+          microseconds.</t>
+        </section>
+
+        <section title="Intended Semantics and Use">
+          <t>Intended Semantics: To specify temporal and spatial aggregated
+          delay variation (also called delay jitter)) with respect to the
+          minimum delay observed on the stream over the one-way delay from the
+          specified source and destination, where the one-way delay is defined
+          in Section 3.1. A non-normative reference definition of end-to-end
+          one-way delay variation is <xref target="RFC3393"/>. Note that <xref
+          target="RFC3393"/> allows the specification of a generic selection
+          function F to unambiguously define the two packets selected to
+          compute delay variations. This document defines the specific case
+          that F selects as the "first" packet the one with the smallest
+          one-way delay. The spatial aggregation level is specified in the
+          query context (e.g., PID to PID, or endpoint to endpoint).</t>
+
+          <t>Note that in statistics, variations are typically evaluated by
+          the distance from samples relative to the mean. In networking
+          context, it is more commonly defined from samples relative to the
+          min. This definition follows the networking convention.</t>
+
+          <t>Use: This metric could be used either as a cost metric constraint
+          attribute or as a returned cost metric in the response.</t>
+
+          <figure>
+            <artwork>Example 3: Delay variation value on source-destination endpoint pairs
+
+POST /endpointcost/lookup HTTP/1.1
+Host: alto.example.com
+Content-Length: 245
+Content-Type: application/alto-endpointcostparams+json
+Accept: 
+   application/alto-endpointcost+json,application/alto-error+json
+
+{
+  "cost-type": {
+    "cost-mode":   "numerical",
+    "cost-metric": "delay-variation"
+  },
+  "endpoints": {
+    "srcs": [
+      "ipv4:192.0.2.2"
+    ],
+    "dsts": [
+      "ipv4:192.0.2.89",
+      "ipv4:198.51.100.34"
+    ]
+  }
+}
+
+HTTP/1.1 200 OK
+Content-Length: 252
+Content-Type: application/alto-endpointcost+json
+
+{
+  "meta": {
+    "cost-type": {
+      "cost-mode":   "numerical",
+      "cost-metric": "delay-variation"
+    }
+  },
+  "endpoint-cost-map": {
+    "ipv4:192.0.2.2": {
+      "ipv4:192.0.2.89":    0,
+      "ipv4:198.51.100.34": 1
+    }
+  }
+}
+</artwork>
+          </figure>
+        </section>
+
+        <!--
+        <section title="Measurement Considerations">
+          <t><list style="hanging">
+            <t hangText="Method of Measurement or Calculation:"><vspace
+            blankLines="1"/>See Section 5.3 of
+            [I-D.ietf-ippm-initial-registry] for potential measurement method.<vspace
+            blankLines="1"/></t>
+
+            <t
+            hangText="Measurement Point(s) with Potential Measurement Domain:"><vspace
+            blankLines="1"/>See Section 4.1, Data sources for potential data sources.<vspace
+            blankLines="1"/></t>
+
+            <t hangText="Measurement Timing:"><vspace blankLines="1"/>See
+            Section 5.3.5 of [I-D.ietf-ippm-initial-registry] for Measurement
+            Timing.<vspace blankLines="1"/></t>
+         </list></t>
+        </section>
+
+
+        <section title="Measurement Considerations and Parameters"> 
+
+          <t>See Section 5 of [I-D.ietf-ippm-initial-registry] for measurement considerations and parameters which may be specified in "parameters". Note that the "parameters" field is an optional field providing non-normative information.
+          </t>
+        </section>
+        -->
+
+        <section title="Cost-Context Specification Considerations">
+          <t>"nominal": Typically network delay variation does not have a
+          nominal value.</t>
+
+          <t>"sla": See the "sla" entry in <xref target="ccspec-ow"/>.</t>
+
+          <!--
+          <t>"import": There can be multiple sources to import delay variation. If the import is from [RFC8571] (by using unidirectional delay variation), it is RECOMMENDED that "parameters" provides "protocol" as a field and "RFC8571" as the value; see <xref target="ccspec-ow" /> for discussions on summing up link metrics to obtain end-to-end metrics. If the import is from the IPPM framework, it is RECOMMENDED that "parameters" provides "protocol" as a field and "ippm" as the value; see Section 4 of [I-D.ietf-ippm-initial-registry] for additional fields which can be specified for "ippm" in "parameters".
+          </t>
+          -->
+
+          <t>"estimation": See the "estimation" entry in <xref
+          target="ccspec-ow"/>. For estimation by aggregation of routing
+          protocol link metrics, the default aggregation of the average of
+          delay variations is the sum of the link delay variations; for
+          estimation using IPPM, the IPPM metric MUST be delay variation
+          (i.e., IPPM OWPDV* metrics). The statistical operator of the ALTO
+          metric MUST be consistent with the IPPM statistical property (e.g.,
+          95-th percentile).</t>
+
+          <!--
+          <t><list style="hanging">
+              <t hangText="Method of Measurement or Calculation:"><vspace
+              blankLines="1"/>See section 8.3 of
+              [I-D.ietf-ippm-initial-registry] for potential measurement method.<vspace
+              blankLines="1"/></t>
+
+              <t
+              hangText="Measurement Point(s) with Potential Measurement Domain:"><vspace
+              blankLines="1"/>See Section 4.1, Data sources for potential data sources.<vspace
+              blankLines="1"/></t>
+
+              <t hangText="Measurement Timing:"><vspace blankLines="1"/>See
+              section 8.3.5 of [I-D.ietf-ippm-initial-registry] for potential measurement
+              timing considerations.<vspace blankLines="1"/></t>
+          </list></t>
+          -->
+        </section>
+      </section>
+
+      <section title="Cost Metric: Loss Rate (lossrate)">
+        <!--
+        <t><list style="hanging">
+            <t hangText="Metric name:"><vspace blankLines="1"/>Packet
+            loss<vspace blankLines="1"/></t>
+
+            <t hangText="Metric Identifier:">
+              <vspace blankLines="1"/>pktloss<vspace blankLines="1"/>
+            </t>
+        </list></t>
+        -->
+
+        <section title="Base Identifier">
+          <t>The base identifier for this performance metric is
+          "lossrate".</t>
+        </section>
+
+        <section title="Value Representation">
+          <t>The metric value type is a single 'JSONNumber' type value
+          conforming to the number specification of Section 6 of [RFC8259].
+          The number MUST be non-negative. The value represents the percentage
+          of packet losses.</t>
+        </section>
+
+        <section title="Intended Semantics and Use">
+          <t>Intended Semantics: To specify temporal and spatial aggregated
+          one-way packet loss rate from the specified source and the specified
+          destination. The base semantics of the metric is the Unidirectional
+          Link Loss metric defined in [RFC8571,RFC8570,RFC7471], but instead
+          of specifying the loss for a link, it is the aggregated loss of all
+          links from the source to the destination. The spatial aggregation
+          level is specified in the query context (e.g., PID to PID, or
+          endpoint to endpoint).</t>
+
+          <t>Use: This metric could be used as a cost metric constraint
+          attribute or as a returned cost metric in the response.</t>
+
+          <figure>
+            <artwork>
+Example 5: Loss rate value on source-destination endpoint pairs
+
+POST /endpointcost/lookup HTTP/1.1
+Host: alto.example.com
+Content-Length: 238
+Content-Type: application/alto-endpointcostparams+json
+Accept: 
+  application/alto-endpointcost+json,application/alto-error+json
+
+{
+  "cost-type": {
+    "cost-mode":   "numerical",
+    "cost-metric": "lossrate"
+  },
+  "endpoints": {
+    "srcs": [
+      "ipv4:192.0.2.2"
+    ],
+    "dsts": [
+      "ipv4:192.0.2.89",
+      "ipv4:198.51.100.34"
+    ]
+  }
+}
+</artwork>
+          </figure>
+
+          <figure>
+            <artwork>
+HTTP/1.1 200 OK
+Content-Length: 248
+Content-Type: application/alto-endpointcost+json
+
+{
+  "meta": {
+    "cost-type": {
+      "cost-mode":   "numerical",
+      "cost-metric": "lossrate"
+    }
+  },
+  "endpoint-cost-map": {
+    "ipv4:192.0.2.2": {
+      "ipv4:192.0.2.89":    0,
+      "ipv4:198.51.100.34": 0.01
+    }
+  }
+}
+</artwork>
+          </figure>
+        </section>
+
+        <!--
+        <section title="Measurement Considerations and Parameters">
+
+          
+          <t><list style="hanging">
+            <t hangText="Method of Measurement or Calculation:"><vspace
+            blankLines="1"/>See Section 2.6 of [RFC7680] for Measurement
+            Method.<vspace blankLines="1"/></t>
+
+            <t
+            hangText="Measurement Point(s) with Potential Measurement Domain:"><vspace
+            blankLines="1"/>See Section 4.1 this document, Data sources.<vspace
+            blankLines="1"/></t>
+
+            <t hangText="Measurement Timing:"><vspace blankLines="1"/>See
+            Section 2 and Section 3 of [RFC7680] for Measurement Timing.<vspace
+            blankLines="1"/></t>
+
+          </list></t>
+        
+
+          <t>See Section 4 of [I-D.ietf-ippm-initial-registry] for measurement considerations and parameters which may be specified in "parameters". Note that the "parameters" field is an optional field providing non-normative information.</t>
+
+        </section>
+        -->
+
+        <section title="Cost-Context Specification Considerations">
+          <t>"nominal": Typically packet loss rate does not have a nominal
+          value, although some networks may specify zero losses.</t>
+
+          <t>"sla": See the "sla" entry in <xref target="ccspec-ow"/>..</t>
+
+          <!--
+          <t>"import": There can be multiple sources to import packet loss rate. If the import is from [RFC8571] (by using unidirectional link loss), it is RECOMMENDED that "parameters" provides "protocol" as a field and "RFC8571" as the value; see <xref target="ccspec-ow" /> for discussions on summing up link metrics to obtain end-to-end metrics. If the import is from the IPPM framework, it is RECOMMENDED that "parameters" provides "protocol" as a field and "ippm" as the value; see Section 4 of [I-D.ietf-ippm-initial-registry] for additional fields which can be specified for "ippm" in "parameters".
+          </t>
+        -->
+
+          <t>"estimation": See the "estimation" entry in <xref
+          target="ccspec-ow"/>. For estimation by aggregation of routing
+          protocol link metrics, the default aggregation of the average of
+          loss rate is the sum of the link link loss rates. But this default
+          aggregation is valid only if two conditions are met: (1) it is valid
+          only when link loss rates are low, and (2) it assumes that each
+          link's loss events are uncorrelated with every other link's loss
+          events. When loss rates at the links are high but independent, the
+          general formula for aggregating loss assuming each link is
+          independent is to compute end-to-end loss as one minus the product
+          of the success rate for each link. Aggregation when losses at links
+          are correlated can be more complex and the ALTO server should be
+          cognizant of correlated loss rates. For estimation using IPPM, the
+          IPPM metric MUST be packet loss (i.e., IPPM OWLoss* metrics). The
+          statistical operator of the ALTO metric MUST be consistent with the
+          IPPM statistical property (e.g., 95-th percentile).</t>
+        </section>
+      </section>
+
+      <section title="Cost Metric: Hop Count (hopcount)">
+        <t>The hopcount metric is mentioned in <xref target="RFC7285"/>
+        Section 9.2.3 as an example. This section further clarifies its
+        properties.</t>
+
+        <!--
+        <t><list style="hanging">
+            <t hangText="Metric name:">
+              <vspace blankLines="1"/>Hop count<vspace blankLines="1"/>
+            </t>
+
+            <t hangText="Metric Identifier:">
+              <vspace blankLines="1"/>hopcount<vspace blankLines="1"/>
+            </t>
+        </list></t>
+        -->
+
+        <section title="Base Identifier">
+          <t>The base identifier for this performance metric is
+          "hopcount".</t>
+        </section>
+
+        <section title="Value Representation">
+          <t>The metric value type is a single 'JSONNumber' type value
+          conforming to the number specification of Section 6 of [RFC8259].
+          The number MUST be a non-negative integer (greater than or equal to
+          0). The value represents the number of hops.</t>
+        </section>
+
+        <section title="Intended Semantics and Use">
+          <!--          
+          <t><list style="hanging">
+            <t hangText="Metric Description:"><vspace blankLines="1"/> To
+            specify the number of hops in the path between the source endpoint
+            and the destination endpoint. The hop count is a basic measurement
+            of distance in a network and can be exposed as Router Hops, in
+            direct relation to the routing protocols originating this
+            information. </t>
+
+            <t hangText="Metric Representation:"><vspace blankLines="1"/>The metric value type is a single 'JSONNumber' type value conforming to the number specification [RFC8259], Section 6. The number MUST be an integer and non-negative.  <vspace blankLines="1"/></t>
+          </list></t>
+        -->
+
+          <t>Intended Semantics: To specify the number of hops in the path
+          from the specified source to the specified destination. The hop
+          count is a basic measurement of distance in a network and can be
+          exposed as the number of router hops computed from the routing
+          protocols originating this information. A hop, however, may
+          represent other units. The spatial aggregation level is specified in
+          the query context (e.g., PID to PID, or endpoint to endpoint).</t>
+
+          <t>Use: This metric could be used as a cost metric constraint
+          attribute or as a returned cost metric in the response.</t>
+
+          <figure>
+            <artwork>
+Example 4: hopcount value on source-destination endpoint pairs
+
+POST /endpointcost/lookup HTTP/1.1
+Host: alto.example.com
+Content-Length: 238
+Content-Type: application/alto-endpointcostparams+json
+Accept: 
+  application/alto-endpointcost+json,application/alto-error+json
+
+{
+  "cost-type": {
+    "cost-mode":   "numerical",
+    "cost-metric": "hopcount"
+  },
+  "endpoints": {
+    "srcs": [
+      "ipv4:192.0.2.2"
+    ],
+    "dsts": [
+      "ipv4:192.0.2.89",
+      "ipv4:198.51.100.34"
+    ]
+  }
+}
+</artwork>
+          </figure>
+
+          <figure>
+            <artwork>
+HTTP/1.1 200 OK
+Content-Length: 245
+Content-Type: application/alto-endpointcost+json
+
+{
+  "meta": {
+    "cost-type": {
+      "cost-mode":   "numerical",
+      "cost-metric": "hopcount"
+    }
+  },
+  "endpoint-cost-map": {
+    "ipv4:192.0.2.2": {
+      "ipv4:192.0.2.89":    5,
+      "ipv4:198.51.100.34": 3
+    }
+  }
+}
+</artwork>
+          </figure>
+        </section>
+
+        <!--
+        <section title="Measurement Considerations and Parameters">
+          
+            <t>The hop count can be calculated based on the number of routers from the 
+              source endpoint through which data must
+              pass to reach the destination endpoint. This count can be measured at the source
+            endpoint by traceroute.</t>
+
+            <t>Upon
+            need, the traceroute can use UDP probe message or other
+            implementations that use ICMP and TCP to discover the hop counts
+            along the path from source endpoint to destination
+            endpoint.</t>
+
+        </section>
+        -->
+
+        <section title="Cost-Context Specification Considerations">
+          <t>"nominal": Typically hop count does not have a nominal value.</t>
+
+          <t>"sla": Typically hop count does not have an SLA value.</t>
+
+          <!--
+          <t>"import": There can be multiple sources to import hop count, such as from IGP routing protocols. 
+          </t>
+          -->
+
+          <t>"estimation": The exact estimation method is out of the scope of
+          this document. An example of estimating hopcounts is by importing
+          from IGP routing protocols. It is RECOMMENDED that the "parameters"
+          field of an "estimation" hop count define the meaning of a hop.</t>
+        </section>
+      </section>
+    </section>
+
+    <section anchor="secbwmetrics"
+             title="Throughput/Bandwidth Performance Metrics">
+      <t>This section introduces four throughput/bandwidth related metrics.
+      Given a specified source to a specified destination, these metrics
+      reflect the volume of traffic that the network can carry from the source
+      to the destination.</t>
+
+      <section title="Cost Metric: TCP Throughput (tput)">
+        <section title="Base Identifier">
+          <t>The base identifier for this performance metric is "tput".</t>
+        </section>
+
+        <section title="Value Representation">
+          <t>The metric value type is a single 'JSONNumber' type value
+          conforming to the number specification of Section 6 of [RFC8259].
+          The number MUST be non-negative. The unit is bytes per second.</t>
+        </section>
+
+        <!--
+        <t><list style="hanging">
+            <t hangText="Metric name:"><vspace
+            blankLines="1"/>Throughput<vspace blankLines="1"/></t>
+
+            <t hangText="Metric Identifier:">
+              <vspace blankLines="1"/>throughput<vspace blankLines="1"/>
+            </t>
+        </list></t>
+        -->
+
+        <section title="Intended Semantics and Use">
+          <t>Intended Semantics: To give the throughput of a TCP
+          congestion-control conforming flow from the specified source to the
+          specified destination. The throughput SHOULD be interpreted as only
+          an estimation, and the estimation is designed only for bulk
+          flows.</t>
+
+          <t>Use: This metric could be used as a cost metric constraint
+          attribute or as a returned cost metric in the response.</t>
+
+          <figure>
+            <artwork>
+Example 5: TCP throughput value on source-destination endpoint pairs
+
+POST /endpointcost/lookup HTTP/1.1
+Host: alto.example.com
+Content-Length: 234
+Content-Type: application/alto-endpointcostparams+json
+Accept: 
+  application/alto-endpointcost+json,application/alto-error+json
+
+{
+  "cost-type": {
+    "cost-mode":   "numerical",
+    "cost-metric": "tput"
+  },
+  "endpoints": {
+    "srcs": [
+      "ipv4:192.0.2.2"
+    ],
+    "dsts": [
+      "ipv4:192.0.2.89",
+      "ipv4:198.51.100.34"
+    ]
+  }
+}
+</artwork>
+          </figure>
+
+          <figure>
+            <artwork>
+HTTP/1.1 200 OK
+Content-Length: 251
+Content-Type: application/alto-endpointcost+json
+
+{
+  "meta": {
+    "cost-type": {
+      "cost-mode":   "numerical",
+      "cost-metric": "tput"
+    }
+  },
+  "endpoint-cost-map": {
+    "ipv4:192.0.2.2": {
+      "ipv4:192.0.2.89":    256000,
+      "ipv4:198.51.100.34": 128000
+    }
+  }
+}
+</artwork>
+          </figure>
+        </section>
+
+        <!--
+      <section title="Measurement Considerations and Parameters">
+
+          
+          <t><list style="hanging">
+             <t hangText="Method of Measurement or Calculation:"><vspace
+              blankLines="1"/>See Section 3.3 of [RFC6349] for Measurement
+              Method.<vspace blankLines="1"/></t>
+
+             <t
+             hangText="Measurement Point(s) with Potential Measurement Domain:"><vspace
+             blankLines="1"/>See Section 4.1 of this document.<vspace
+            blankLines="1"/></t>
+
+             <t hangText="Measurement Timing:"><vspace blankLines="1"/>Similar
+             to RTT. See Section 4.3.5 of [I-D.ietf-ippm-initial-registry] for
+             Measurement Timing. <vspace blankLines="1"/></t>             
+          </list></t>
+          <t>See Section 3.3 of [RFC6349] for measurement
+              method and parameters which may be specified in "parameters". Note that the "parameters" field is an optional field providing non-normative information.</t>
+
+      </section> 
+      -->
+
+        <section title="Cost-Context Specification Considerations">
+          <t>"nominal": Typically TCP throughput does not have a nominal
+          value, and SHOULD NOT be generated.</t>
+
+          <t>"sla": Typically TCP throughput does not have an SLA value, and
+          SHOULD NOT be generated.</t>
+
+          <!--
+          <t>"import": Typically there is not a routing protocol through which one can import TCP throughput. If the import is from the IPPM framework, it is RECOMMENDED that "parameters" provides "protocol" as a field and "ippm" as the value; see Section 4 of [I-D.ietf-ippm-initial-registry] for additional fields which can be specified for "ippm" in "parameters".
+          </t>
+        -->
+
+          <t>"estimation": The exact estimation method is out of the scope of
+          this document. It is RECOMMENDED that the "parameters" field of an
+          "estimation" TCP throughput metric include the following
+          information: (1) the congestion-control algorithm; and (2) the
+          estimation methodology. To specify (1), it is RECOMMENDED that the
+          "parameters" field (object) include a field named
+          "congestion-control-algorithm", which provides a URI for the
+          specification of the algorithm; for example, for an ALTO server to
+          provide estimation to the throughput of a Cubic Congestion control
+          flow, its "parameters" includes a field
+          "congestion-control-algorithm", with value being set to <xref
+          target="I-D.ietf-tcpm-rfc8312bis"/>; for an ongoing congestion
+          control algorithm such as BBR, a a link to its specification. To
+          specify (2), the "parameters" includes as many details as possible;
+          for example, for TCP Cubic throughout estimation, the "parameters"
+          field specifies that the throughput is estimated by setting _C_ to
+          0.4, and the Equation in Figure 8 of <xref
+          target="I-D.ietf-tcpm-rfc8312bis"/> is applied; as an alternative,
+          the methodology may be based on the NUM model <xref
+          target="Prophet"/>, or the G2 model <xref target="G2"/>. The exact
+          specification of the parameters field is out of the scope of this
+          document.</t>
+        </section>
+      </section>
+
+      <!-- TCP Throughput -->
+
+      <section title="Cost Metric: Residual Bandwidth (bw-residual)">
+        <!--
+        <t><list style="hanging">
+            <t hangText="Metric name:"><vspace blankLines="1"/>Residual
+            Bandwidth<vspace blankLines="1"/></t>
+
+            <t hangText="Metric Identifier:">
+              <vspace blankLines="1"/>residualbw<vspace blankLines="1"/>
+            </t>
+        </list></t>
+        -->
+
+        <section title="Base Identifier">
+          <t>The base identifier for this performance metric is
+          "bw-residual".</t>
+        </section>
+
+        <section title="Value Representation">
+          <t>The metric value type is a single 'JSONNumber' type value that is
+          non-negative. The unit of measurement is bytes per second.</t>
+        </section>
+
+        <section title="Intended Semantics and Use">
+          <t>Intended Semantics: To specify temporal and spatial residual
+          bandwidth from the specified source and the specified destination.
+          The base semantics of the metric is the Unidirectional Residual
+          Bandwidth metric defined in [RFC8571,RFC8570,RFC7471], but instead
+          of specifying the residual bandwidth for a link, it is the residual
+          bandwidth of the path from the source to the destination. Hence, it
+          is the minimal residual bandwidth among all links from the source to
+          the destination. When the max statistical operator is defined for
+          the metric, it typically provides the minimum of the link capacities
+          along the path, as the default value of the residual bandwidth of a
+          link is its link capacity [RFC8571,8570,7471]. The spatial
+          aggregation unit is specified in the query context (e.g., PID to
+          PID, or endpoint to endpoint).</t>
+
+          <t>The default statistical operator for residual bandwidth is the
+          current instantaneous sample; that is, the default is assumed to be
+          "cur".</t>
+
+          <t>Use: This metric could be used either as a cost metric constraint
+          attribute or as a returned cost metric in the response.</t>
+
+          <figure>
+            <artwork>
+Example 7: bw-residual value on source-destination endpoint pairs
+
+POST /endpointcost/lookup HTTP/1.1
+Host: alto.example.com
+Content-Length: 241
+Content-Type: application/alto-endpointcostparams+json
+Accept: 
+  application/alto-endpointcost+json,application/alto-error+json
+
+{
+  "cost-type": {
+    "cost-mode":   "numerical",
+    "cost-metric": "bw-residual"
+  },
+  "endpoints": {
+    "srcs": [
+      "ipv4:192.0.2.2"
+    ],
+    "dsts": [
+      "ipv4:192.0.2.89",
+      "ipv4:198.51.100.34"
+    ]
+  }
+}
+</artwork>
+          </figure>
+
+          <figure>
+            <artwork>
+HTTP/1.1 200 OK
+Content-Length: 255
+Content-Type: application/alto-endpointcost+json
+
+{
+  "meta": {
+    "cost-type": {
+      "cost-mode":   "numerical",
+      "cost-metric": "bw-residual"
+    }
+  },
+  "endpoint-cost-map": {
+    "ipv4:192.0.2.2":  {
+      "ipv4:192.0.2.89":       0,
+      "ipv4:198.51.100.34": 2000
+    }
+  }
+}
+</artwork>
+          </figure>
+        </section>
+
+        <!--
+      <section title="Measurement Considerations and Parameters">
+          <t><list style="hanging">       
+            <t hangText="Method of Measurement or Calculation:"><vspace
+            blankLines="1"/>residual Bandwidth is the Unidirectional residual
+            bandwidth measured between two directly connected IS-IS neighbors
+            or OSPF neighbors. See Section 4.5 of [RFC7810] for Measurement
+            Method. <vspace blankLines="1"/></t>
+            
+
+            <t
+            hangText="Measurement Point(s) with Potential Measurement Domain:"><vspace
+            blankLines="1"/>See Section 4.1 of this document.<vspace
+            blankLines="1"/></t>
+
+            <t hangText="Measurement Timing:"><vspace blankLines="1"/>See
+            Section 5 of [RFC7810] for Measurement Timing.<vspace
+            blankLines="1"/></t>
+
+          </list></t>
+      </section> 
+      -->
+
+        <section title="Cost-Context Specification Considerations">
+          <t>"nominal": Typically residual bandwidth does not have a nominal
+          value.</t>
+
+          <t>"sla": Typically residual bandwidth does not have an "sla"
+          value.</t>
+
+          <!--
+          <t>"import": There can be multiple sources to import residual bandwidth. If the import is from [RFC8571] (by using unidirectional residual bandwidth), it is RECOMMENDED that "parameters" provides "protocol" as a field and "RFC8571" as the value. The server should be cognizant of issues when computing end-to-end summary statistics from link statistics. For example, the min of the end-to-end path residual bandwidth is the min of all links on the path. 
+          </t>
+        -->
+
+          <t>"estimation": See the "estimation" entry in Section 3.1.4 on
+          aggregation of routing protocol link metrics. The current ("cur")
+          residual bandwidth of a path is the minimal of the residual
+          bandwidth of all links on the path.</t>
+        </section>
+      </section>
+
+      <!-- residual bandwidth -->
+
+      <section title="Cost Metric: Available Bandwidth (bw-available)">
+        <!--
+        <t><list style="hanging">
+            <t hangText="Metric name:"><vspace blankLines="1"/>Maximum
+            Reservable Bandwidth<vspace blankLines="1"/></t>
+
+            <t hangText="Metric Identifier:">
+              <vspace blankLines="1"/>maxresbw<vspace blankLines="1"/>
+            </t>
+        </list></t>
+        -->
+
+        <section title="Base Identifier">
+          <t>The base identifier for this performance metric is
+          "bw-available".</t>
+        </section>
+
+        <section title="Value Representation">
+          <t>The metric value type is a single 'JSONNumber' type value that is
+          non-negative. The unit of measurement is bytes per second.</t>
+        </section>
+
+        <section title="Intended Semantics and Use">
+          <t>Intended Semantics: To specify temporal and spatial available
+          bandwidth from the specified source to the specified destination.
+          The base semantics of the metric is the Unidirectional Available
+          Bandwidth metric defined in [RFC8571,RFC8570,RFC7471], but instead
+          of specifying the available bandwidth for a link, it is the
+          available bandwidth of the path from the source to the destination.
+          Hence, it is the minimal available bandwidth among all links from
+          the source to the destination.The spatial aggregation unit is
+          specified in the query context (e.g., PID to PID, or endpoint to
+          endpoint).</t>
+
+          <t>The default statistical operator for available bandwidth is the
+          current instantaneous sample; that is, the default is assumed to be
+          "cur".</t>
+
+          <t>Use: This metric could be used either as a cost metric constraint
+          attribute or as a returned cost metric in the response.</t>
+
+          <figure>
+            <artwork>
+  Example 8: bw-available value on source-destination endpoint pairs
+
+POST /endpointcost/lookup HTTP/1.1
+Host: alto.example.com
+Content-Length: 244
+Content-Type: application/alto-endpointcostparams+json
+Accept: 
+  application/alto-endpointcost+json,application/alto-error+json
+
+{
+  "cost-type": { 
+    "cost-mode":   "numerical",
+    "cost-metric": "bw-available"
+  },
+  "endpoints": {
+    "srcs": [
+      "ipv4:192.0.2.2"
+    ],
+    "dsts": [
+      "ipv4:192.0.2.89",
+      "ipv4:198.51.100.34"
+    ]
+  }
+}
+</artwork>
+          </figure>
+
+          <figure>
+            <artwork>
+HTTP/1.1 200 OK
+Content-Length: 255
+Content-Type: application/alto-endpointcost+json
+
+{
+  "meta": {
+    "cost-type": {
+      "cost-mode":   "numerical",
+      "cost-metric": "bw-available"
+    }
+  },
+  "endpoint-cost-map": {
+    "ipv4:192.0.2.2": {
+      "ipv4:192.0.2.89":       0,
+      "ipv4:198.51.100.34": 2000
+    }
+  }
+}
+</artwork>
+          </figure>
+        </section>
+
+        <!--
+      <section title="Measurement Considerations and Parameters">
+          <t><list style="hanging">         
+            <t hangText="Method of Measurement or Calculation:"><vspace
+            blankLines="1"/>Maximum Reservable Bandwidth is the bandwidth
+            measured between two directly connected IS-IS neighbors or OSPF
+            neighbors. See Section 3.5 of [RFC5305] for Measurement
+            Method.<vspace blankLines="1"/></t>
+
+            <t
+            hangText="Measurement Point(s) with Potential Measurement Domain:"><vspace
+            blankLines="1"/>See Section 4.1 this document for discussions.<vspace
+            blankLines="1"/></t>
+
+            <t hangText="Measurement Timing:"><vspace blankLines="1"/>See
+            Section 3.5 of [RFC5305] and Section 5 of [RFC7810] for
+            Measurement Timing.<vspace blankLines="1"/></t>         
+          </list></t>
+      </section>
+      -->
+
+        <section title="Cost-Context Specification Considerations">
+          <t>"nominal": Typically available bandwidth does not have a nominal
+          value.</t>
+
+          <t>"sla": Typically available bandwidth does not have an "sla"
+          value.</t>
+
+          <!--
+          <t>"import": There can be multiple sources to import maximum reservable bandwidth. For example, Maximum reservable bandwidth is defined by IS-IS/OSPF TE, and 
+          measures the reservable bandwidth between two directly connected IS-IS neighbors or OSPF
+          neighbors; see Section 3.5 of [RFC5305]. If the import is from [RFC8571] (by using unidirectional maximum reservable bandwidth), it is RECOMMENDED that "parameters" provides "protocol" as a field and "RFC8571" as the value. 
+          </t>
+        -->
+
+          <t>"estimation": See the "estimation" entry in Section 3.1.4 on
+          aggregation of routing protocol link metrics. The current ("cur")
+          available bandwidth of a path is the minimum of the available
+          bandwidth of all links on the path.</t>
+        </section>
+
+        <!-- cc consider -->
+      </section>
+
+      <!-- end of available bw -->
+    </section>
+
+    <section anchor="secopconsider" title="Operational Considerations">
+      <t>The exact measurement infrastructure, measurement condition, and
+      computation algorithms can vary from different networks, and are outside
+      the scope of this document. Both the ALTO server and the ALTO clients,
+      however, need to be cognizant of the operational issues discussed
+      below.</t>
+
+      <t>Also, the performance metrics specified in this document are similar,
+      in that they may use similar data sources and have similar issues in
+      their calculation. Hence, this document specifies common issues unless
+      one metric has its unique challenges.</t>
+
+      <section title="Source Considerations">
+        <t>The addition of the "cost-source" field is to solve a key issue: An
+        ALTO server needs data sources to compute the cost metrics described
+        in this document, and an ALTO client needs to know the data sources to
+        better interpret the values.</t>
+
+        <t>To avoid too fine-grained information, this document introduces
+        "cost-source" to indicate only the high-level type of data sources:
+        "estimation", "nominal" or "lsa", where "estimation" is a type of
+        measurement data source, "nominal" is a type of static configuration,
+        and "sla" is a type that is more based on policy.</t>
+
+        <t>For estimation, for example, the ALTO server may use log servers or
+        the OAM system as its data source as recommended by <xref
+        target="RFC7971"/>. In particular, the cost metrics defined in this
+        document can be computed using routing systems as the data
+        sources.</t>
+
+        <!--
+        Mechanisms defined in [RFC2681], [RFC3393],
+        [RFC7679], [RFC7680], [RFC3630], [RFC3784], [RFC7471], [RFC7810],
+        [RFC7752] and [I-D.ietf-idr-te-pm-bgp] that allow an ALTO Server to
+        retrieve and derive the necessary information to compute the metrics
+        that we describe in this document.</t>      
+        -->
+      </section>
+
+      <section title="Metric Timestamp Consideration ">
+        <t>Despite the introduction of the additional cost-context
+        information, the metrics do not have a field to indicate the
+        timestamps of the data used to compute the metrics. To indicate this
+        attribute, the ALTO server SHOULD return HTTP "Last-Modified", to
+        indicate the freshness of the data used to compute the performance
+        metrics.</t>
+
+        <t>If the ALTO client obtains updates through an incremental update
+        mechanism <xref target="RFC8895"/>, the client SHOULD assume that the
+        metric is computed using a snapshot at the time that is approximated
+        by the receiving time.</t>
+      </section>
+
+      <section title="Backward Compatibility Considerations">
+        <t>One potential issue introduced by the optional "cost-source" field
+        is backward compatibility. Consider that an IRD which defines two
+        cost-types with the same "cost-mode" and "cost-metric", but one with
+        "cost-source" being "estimation" and the other being "sla". Then an
+        ALTO client that is not aware of the extension will not be able to
+        distinguish between these two types. A similar issue can arise even
+        with a single cost-type, whose "cost-source" is "sla": an ALTO client
+        that is not aware of this extension will ignore this field and
+        consider the metric estimation.</t>
+
+        <t>To address the backward-compatibility issue, if a "cost-metric" is
+        "routingcost" and the metric contains a "cost-context" field, then it
+        MUST be "estimation"; if it is not, the client SHOULD reject the
+        information as invalid.</t>
+      </section>
+
+      <section title="Computation Considerations">
+        <t>The metric values exposed by an ALTO server may result from
+        additional processing on measurements from data sources to compute
+        exposed metrics. This may involve data processing tasks such as
+        aggregating the results across multiple systems, removing outliers,
+        and creating additional statistics. There are two challenges on the
+        computation of ALTO performance metrics.</t>
+
+        <section title="Configuration Parameters Considerations">
+          <t>Performance metrics often depend on configuration parameters, and
+          exposing such configuration parameters can help an ALTO client to
+          better understand the exposed metrics. In particular, an ALTO server
+          may be configured to compute a TE metric (e.g., packet loss rate) in
+          fixed intervals, say every T seconds. To expose this information,
+          the ALTO server may provide the client with two pieces of additional
+          information: (1) when the metrics are last computed, and (2) when
+          the metrics will be updated (i.e., the validity period of the
+          exposed metric values). The ALTO server can expose these two pieces
+          of information by using the HTTP response headers Last-Modified and
+          Expires.</t>
+        </section>
+
+        <section title="Aggregation Computation Considerations">
+          <t>An ALTO server may not be able to measure the performance metrics
+          to be exposed. The basic issue is that the "source" information can
+          often be link level. For example, routing protocols often measure
+          and report only per link loss, not end-to-end loss; similarly,
+          routing protocols report link level available bandwidth, not
+          end-to-end available bandwidth. The ALTO server then needs to
+          aggregate these data to provide an abstract and unified view that
+          can be more useful to applications. The server should consider that
+          different metrics may use different aggregation computation. For
+          example, the end-to-end latency of a path is the sum of the latency
+          of the links on the path; the end-to-end available bandwidth of a
+          path is the minimum of the available bandwidth of the links on the
+          path; in contrast, aggregating loss values is complicated by the
+          potential for correlated loss events on different links in the
+          path</t>
+        </section>
+      </section>
+    </section>
+
+    <section anchor="secsecconsider" title="Security Considerations">
+      <t>The properties defined in this document present no security
+      considerations beyond those in Section 15 of the base ALTO specification
+      <xref target="RFC7285"/>.</t>
+
+      <t>However, concerns addressed in Sections "15.1 Authenticity and
+      Integrity of ALTO Information", "15.2 Potential Undesirable Guidance
+      from Authenticated ALTO Information", and "15.3 Confidentiality of ALTO
+      Information" remain of utmost importance. Indeed, TE performance is
+      highly sensitive ISP information; therefore, sharing TE metric values in
+      numerical mode requires full mutual confidence between the entities
+      managing the ALTO server and the ALTO client. ALTO servers will most
+      likely distribute numerical TE performance to ALTO clients under strict
+      and formal mutual trust agreements. On the other hand, ALTO clients must
+      be cognizant on the risks attached to such information that they would
+      have acquired outside formal conditions of mutual trust.</t>
+
+      <t>To mitigate confidentiality risks during information transport of TE
+      performance metrics, the operator should address the risk of ALTO
+      information being leaked to malicious Clients or third parties, through
+      attacks such as the person-in-the-middle (PITM) attacks. As specified in
+      "Protection Strategies" (Section 15.3.2 of <xref target="RFC7285"/>),
+      the ALTO Server should authenticate ALTO Clients when transmitting an
+      ALTO information resource containing sensitive TE performance metrics.
+      "Authentication and Encryption" (Section 8.3.5 of <xref
+      target="RFC7285"/>) specifies that "ALTO Server implementations as well
+      as ALTO Client implementations MUST support the "https" URI scheme of
+      <xref target="RFC2818"/> and Transport Layer Security (TLS) of <xref
+      target="RFC8446"/>".</t>
+    </section>
+
+    <section anchor="ianaconsider" title="IANA Considerations">
+      <t>IANA has created and now maintains the "ALTO Cost Metric Registry",
+      listed in Section 14.2, Table 3 of <xref target="RFC7285"/>. This
+      registry is located at
+      &lt;https://www.iana.org/assignments/alto-protocol/alto-protocol.xhtml#cost-metrics&gt;.
+      This document requests to add the following entries to “ALTO Cost Metric
+      Registry”.</t>
+
+      <figure>
+        <artwork>
++-----------------+--------------------+
+| Identifier      | Intended Semantics |
++-----------------+--------------------+
+| delay-ow        | See Section 3.1    |
+| delay-rt        | See Section 3.2    |
+| delay-variation | See Section 3.3    |
+| lossrate        | See Section 3.4    |
+| hopcount        | See Section 3.5    |
+| tput            | See Section 4.1    |
+| bw-residual     | See Section 4.2    |
+| bw-available    | See Section 4.3    |
+| bw-utilized     | See Section 4.4    |
++-----------------+--------------------+
+</artwork>
+      </figure>
+
+      <t>This document requests the creation of the "ALTO Cost Source
+      Registry". This registry serves two purposes. First, it ensures
+      uniqueness of identifiers referring to ALTO cost source types. Second,
+      it provides references to particular semantics of allocated cost source
+      types to be applied by both ALTO servers and applications utilizing ALTO
+      clients.</t>
+
+      <t>A new ALTO cost source can be added after IETF Review <xref
+      target="RFC8126"/>, to ensure that proper documentation regarding the
+      new ALTO cost source and its security considerations have been provided.
+      The RFC(s) documenting the new cost source should be detailed enough to
+      provide guidance to both ALTO service providers and applications
+      utilizing ALTO clients as to how values of the registered ALTO cost
+      source should be interpreted. Updates and deletions of ALTO cost source
+      follow the same procedure.</t>
+
+      <t>Registered ALTO address type identifiers MUST conform to the
+      syntactical requirements specified in Section 2.1. Identifiers are to be
+      recorded and displayed as strings.</t>
+
+      <t>Requests to add a new value to the registry MUST include the
+      following information: <list style="symbols">
+          <t>Identifier: The name of the desired ALTO cost source type.</t>
+
+          <t>Intended Semantics: ALTO cost source type carry with them
+          semantics to guide their usage by ALTO clients. Hence, a document
+          defining a new type should provide guidance to both ALTO service
+          providers and applications utilizing ALTO clients as to how values
+          of the registered ALTO endpoint property should be interpreted.</t>
+
+          <t>Security Considerations: ALTO cost source types expose
+          information to ALTO clients. ALTO service providers should be made
+          aware of the security ramifications related to the exposure of a
+          cost source type.</t>
+        </list></t>
+
+      <t>This specification requests registration of the identifiers -
+      "nominal", "sla", and "estimation" listed in the table below. Semantics
+      for the these are documented in Section 2.1, and security considerations
+      are documented in Section 6.</t>
+
+      <figure>
+        <artwork>
++------------+----------------------------------+----------------+
+| Identifier | Intended Semantics               | Security       |
+|            |                                  | Considerations |
++------------+----------------------------------+----------------+
+| nominal    | Values in nominal cases; Sec. 2.1| Sec. 6         |
+| sla        | Values reflecting service        | Sec. 6         |
+|            | level agreement; Sec. 2.1        |                |
+| estimation | Values by estimation; Sec. 2.1   | Sec. 6         |
++------------+----------------------------------+----------------+
+</artwork>
+      </figure>
+    </section>
+
+    <section title="Acknowledgments">
+      <t>The authors of this document would also like to thank Martin Duke for
+      the highly informative, thorough AD reviews and comments. We thank
+      Christian Amsüss, Elwyn Davies, Haizhou Du, Kai Gao, Geng Li, Lili Liu,
+      Danny Alex Lachos Perez, and Brian Trammell for the reviews and
+      comments.</t>
+    </section>
+  </middle>
+
+  <back>
+    <references title="Normative References">
+      <!-- 
+      <?rfc include="reference.RFC.5234.xml"?>
+
+      <?rfc include="reference.RFC.4627.xml"?>
+
+      
+
+      <?rfc include="reference.RFC.7471.xml"?>
+
+      <?rfc include="reference.RFC.7752.xml"?>
+
+      <?rfc include="reference.RFC.7810.xml"?>
+
+      <?rfc include="reference.RFC.7680.xml"?>
+
+      <?rfc include="reference.RFC.2679.xml"?>
+
+      <?rfc include="reference.RFC.2681.xml"?>
+
+      <?rfc include="reference.RFC.3393.xml"?>
+
+      <?rfc include="reference.RFC.5305.xml"?>
+      
+      <?rfc include="reference.RFC.6349.xml"?>
+
+      <?rfc include="reference.RFC.7679.xml"?>
+
+      <?rfc include="reference.RFC.8571.xml"?>
+
+      <?rfc include="reference.I-D.ietf-idr-te-pm-bgp.xml"?>
+
+      <?rfc include="reference.I-D.ietf-ippm-initial-registry.xml"?>
+    -->
+
+      <?rfc include="reference.RFC.2119.xml"?>
+
+      <!-- requirements words -->
+
+      <?rfc include="reference.RFC.2818.xml"?>
+
+      <!-- https -->
+
+      <?rfc include="reference.RFC.3630.xml"?>
+
+      <!-- TE base -->
+
+      <?rfc include="reference.RFC.5305.xml"?>
+
+      <!-- TE base -->
+
+      <?rfc include="reference.RFC.6390.xml"?>
+
+      <!-- guidelines on new metrics -->
+
+      <?rfc include="reference.RFC.7285.xml"?>
+
+      <!-- alto base -->
+
+      <?rfc include="reference.RFC.7471.xml"?>
+
+      <!-- OSPF TE metrics -->
+
+      <?rfc include="reference.RFC.8126.xml"?>
+
+      <!-- iana -->
+
+      <?rfc include="reference.RFC.8174.xml"?>
+
+      <?rfc include="reference.RFC.8259.xml"?>
+
+      <!-- JSON Data-->
+
+      <?rfc include="reference.RFC.8446.xml"?>
+
+      <!-- TLS 1.3 -->
+
+      <?rfc include="reference.RFC.8570.xml"?>
+
+      <!-- ISIS TE -->
+
+      <?rfc include="reference.RFC.8571.xml"?>
+
+      <!-- BGP-LS -->
+
+      <?rfc include="reference.RFC.8895.xml"?>
+
+      <!-- ALTO SSE -->
+
+      <reference anchor="IANA-IPPM">
+        <front>
+          <title>Performance Metrics Registry,
+          https://www.iana.org/assignments/performance-metrics/performance-metrics.xhtml</title>
+
+          <author initials="" surname="IANA"/>
+
+          <date year=""/>
+        </front>
+      </reference>
+
+      <?rfc include="reference.I-D.ietf-tcpm-rfc8312bis.xml"?>
+    </references>
+
+    <references title="Informative References">
+      <?rfc include="reference.RFC.2330.xml"?>
+
+      <!-- IPPM Framework -->
+
+      <?rfc include="reference.RFC.2681.xml"?>
+
+      <!-- IPPM Round Trip Delay -->
+
+      <?rfc include="reference.RFC.3393.xml"?>
+
+      <!-- IPPM Packet Delay Variation -->
+
+      <?rfc include="reference.RFC.5357.xml"?>
+
+      <!-- TWAMP -->
+
+      <?rfc include="reference.RFC.7679.xml"?>
+
+      <!-- IPPM One Way Delay -->
+
+      <?rfc include="reference.RFC.7971.xml"?>
+
+      <!-- ALTO requirements -->
+
+      <reference anchor="G2">
+        <front>
+          <title>On the Bottleneck Structure of Congestion-Controlled
+          Networks</title>
+
+          <author initials="J" surname="Ros-Giralt"/>
+
+          <author initials="A" surname="Bohara"/>
+
+          <author initials="S" surname="Yellamraju"/>
+
+          <author initials="" surname="et. al."/>
+
+          <date year="2020"/>
+        </front>
+
+        <seriesInfo name="ACM SIGMETRICS" value="2019"/>
+      </reference>
+
+      <reference anchor="FlowDirector">
+        <front>
+          <title>Steering Hyper-Giants' Traffic at Scale</title>
+
+          <author initials="E" surname="Pujol"/>
+
+          <author initials="I" surname="Poese"/>
+
+          <author initials="J" surname="Zerwas"/>
+
+          <author initials="G" surname="Smaragdakis"/>
+
+          <author initials="A" surname="Feldmann"/>
+
+          <date year="2020"/>
+        </front>
+
+        <seriesInfo name="ACM CoNEXT" value="2020"/>
+      </reference>
+
+      <reference anchor="Prometheus">
+        <front>
+          <title>Prometheus: A Next-Generation Monitoring System</title>
+
+          <author initials="J" surname="Volz"/>
+
+          <author initials="B" surname="Rabenstein"/>
+
+          <date year="2015"/>
+        </front>
+      </reference>
+
+      <reference anchor="Prophet">
+        <front>
+          <title>Prophet: Fast, Accurate Throughput Prediction with Reactive
+          Flows</title>
+
+          <author initials="K" surname="Gao"/>
+
+          <author initials="J" surname="Zhang"/>
+
+          <author initials="YR" surname="Yang"/>
+
+          <date year="2020"/>
+        </front>
+
+        <seriesInfo name="ACM/IEEE Transactions on Networking" value="July"/>
+      </reference>
+    </references>
+  </back>
+</rfc>
