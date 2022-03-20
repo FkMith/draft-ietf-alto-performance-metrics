@@ -687,6 +687,59 @@ Content-Type: application/alto-endpointcost+json
           field, the values are based on "estimation". Since the identifier
           does not include the statistical operator string component, the
           values will represent median values.</t>
+
+          <t>Example 1a below shows an example that is similar to Example 1, but for IPv6.</t>
+
+          <figure>
+            <artwork>Example 1a: Delay value on source-destination endpoint pairs for IPv6
+
+POST /endpointcost/lookup HTTP/1.1
+Host: alto.example.com
+Content-Length: 252
+Content-Type: application/alto-endpointcostparams+json
+Accept: 
+  application/alto-endpointcost+json,application/alto-error+json
+
+{
+  "cost-type": {
+    "cost-mode":   "numerical",
+    "cost-metric": "delay-ow"
+  },
+  "endpoints": {
+    "srcs": [
+      "ipv6:2001:db8:100::1"
+    ],
+    "dsts": [
+      "ipv6:2001:db8:100::2",
+      "ipv6:2001:db8:100::3"
+    ]
+  }
+}
+</artwork>
+          </figure>
+
+          <figure>
+            <artwork>
+HTTP/1.1 200 OK
+Content-Length: 257
+Content-Type: application/alto-endpointcost+json
+
+{
+  "meta": {
+    "cost-type": {
+      "cost-mode":   "numerical",
+      "cost-metric": "delay-ow"
+    }
+  },
+  "endpoint-cost-map": {
+    "ipv6:2001:db8:100::1": {
+      "ipv6:2001:db8:100::2": 10,
+      "ipv6:2001:db8:100::3": 20
+    }
+  }
+}
+</artwork>
+          </figure>   
         </section>
 
         <section anchor="ccspec-ow"

@@ -5,7 +5,7 @@
 ALTO Working Group                                                 Q. Wu
 Internet-Draft                                                    Huawei
 Intended status: Standards Track                                 Y. Yang
-Expires: September 17, 2022                              Yale University
+Expires: September 21, 2022                              Yale University
                                                                   Y. Lee
                                                                  Samsung
                                                                 D. Dhody
@@ -14,7 +14,7 @@ Expires: September 17, 2022                              Yale University
                                                          Nokia Bell Labs
                                                             L. Contreras
                                                               Telefonica
-                                                          March 16, 2022
+                                                          March 20, 2022
 
 
                      ALTO Performance Cost Metrics
@@ -53,7 +53,7 @@ Requirements Language
 
 
 
-Wu, et al.             Expires September 17, 2022               [Page 1]
+Wu, et al.             Expires September 21, 2022               [Page 1]
 
 Internet-Draft        ALTO Performance Cost Metrics           March 2022
 
@@ -73,7 +73,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on September 17, 2022.
+   This Internet-Draft will expire on September 21, 2022.
 
 Copyright Notice
 
@@ -101,71 +101,71 @@ Table of Contents
        3.1.1.  Base Identifier . . . . . . . . . . . . . . . . . . .  12
        3.1.2.  Value Representation  . . . . . . . . . . . . . . . .  12
        3.1.3.  Intended Semantics and Use  . . . . . . . . . . . . .  12
-       3.1.4.  Cost-Context Specification Considerations . . . . . .  14
-     3.2.  Cost Metric: Round-trip Delay (delay-rt)  . . . . . . . .  15
-       3.2.1.  Base Identifier . . . . . . . . . . . . . . . . . . .  15
-       3.2.2.  Value Representation  . . . . . . . . . . . . . . . .  15
-       3.2.3.  Intended Semantics and Use  . . . . . . . . . . . . .  15
+       3.1.4.  Cost-Context Specification Considerations . . . . . .  15
+     3.2.  Cost Metric: Round-trip Delay (delay-rt)  . . . . . . . .  16
+       3.2.1.  Base Identifier . . . . . . . . . . . . . . . . . . .  16
+       3.2.2.  Value Representation  . . . . . . . . . . . . . . . .  16
+       3.2.3.  Intended Semantics and Use  . . . . . . . . . . . . .  16
 
 
 
-Wu, et al.             Expires September 17, 2022               [Page 2]
+Wu, et al.             Expires September 21, 2022               [Page 2]
 
 Internet-Draft        ALTO Performance Cost Metrics           March 2022
 
 
-       3.2.4.  Cost-Context Specification Considerations . . . . . .  17
-     3.3.  Cost Metric: Delay Variation (delay-variation)  . . . . .  17
-       3.3.1.  Base Identifier . . . . . . . . . . . . . . . . . . .  17
-       3.3.2.  Value Representation  . . . . . . . . . . . . . . . .  17
-       3.3.3.  Intended Semantics and Use  . . . . . . . . . . . . .  17
-       3.3.4.  Cost-Context Specification Considerations . . . . . .  19
-     3.4.  Cost Metric: Loss Rate (lossrate) . . . . . . . . . . . .  19
-       3.4.1.  Base Identifier . . . . . . . . . . . . . . . . . . .  19
-       3.4.2.  Value Representation  . . . . . . . . . . . . . . . .  19
-       3.4.3.  Intended Semantics and Use  . . . . . . . . . . . . .  19
-       3.4.4.  Cost-Context Specification Considerations . . . . . .  21
-     3.5.  Cost Metric: Hop Count (hopcount) . . . . . . . . . . . .  21
-       3.5.1.  Base Identifier . . . . . . . . . . . . . . . . . . .  21
-       3.5.2.  Value Representation  . . . . . . . . . . . . . . . .  21
-       3.5.3.  Intended Semantics and Use  . . . . . . . . . . . . .  21
-       3.5.4.  Cost-Context Specification Considerations . . . . . .  23
-   4.  Throughput/Bandwidth Performance Metrics  . . . . . . . . . .  23
-     4.1.  Cost Metric: TCP Throughput (tput)  . . . . . . . . . . .  23
-       4.1.1.  Base Identifier . . . . . . . . . . . . . . . . . . .  23
-       4.1.2.  Value Representation  . . . . . . . . . . . . . . . .  23
-       4.1.3.  Intended Semantics and Use  . . . . . . . . . . . . .  24
-       4.1.4.  Cost-Context Specification Considerations . . . . . .  25
-     4.2.  Cost Metric: Residual Bandwidth (bw-residual) . . . . . .  26
-       4.2.1.  Base Identifier . . . . . . . . . . . . . . . . . . .  26
-       4.2.2.  Value Representation  . . . . . . . . . . . . . . . .  26
-       4.2.3.  Intended Semantics and Use  . . . . . . . . . . . . .  26
-       4.2.4.  Cost-Context Specification Considerations . . . . . .  28
-     4.3.  Cost Metric: Available Bandwidth (bw-available) . . . . .  28
-       4.3.1.  Base Identifier . . . . . . . . . . . . . . . . . . .  28
-       4.3.2.  Value Representation  . . . . . . . . . . . . . . . .  28
-       4.3.3.  Intended Semantics and Use  . . . . . . . . . . . . .  28
-       4.3.4.  Cost-Context Specification Considerations . . . . . .  30
-   5.  Operational Considerations  . . . . . . . . . . . . . . . . .  30
-     5.1.  Source Considerations . . . . . . . . . . . . . . . . . .  30
-     5.2.  Metric Timestamp Consideration  . . . . . . . . . . . . .  30
-     5.3.  Backward Compatibility Considerations . . . . . . . . . .  31
-     5.4.  Computation Considerations  . . . . . . . . . . . . . . .  31
-       5.4.1.  Configuration Parameters Considerations . . . . . . .  31
-       5.4.2.  Aggregation Computation Considerations  . . . . . . .  32
-   6.  Security Considerations . . . . . . . . . . . . . . . . . . .  32
-   7.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .  33
-   8.  Acknowledgments . . . . . . . . . . . . . . . . . . . . . . .  34
-   9.  References  . . . . . . . . . . . . . . . . . . . . . . . . .  34
-     9.1.  Normative References  . . . . . . . . . . . . . . . . . .  34
-     9.2.  Informative References  . . . . . . . . . . . . . . . . .  36
-   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  37
+       3.2.4.  Cost-Context Specification Considerations . . . . . .  18
+     3.3.  Cost Metric: Delay Variation (delay-variation)  . . . . .  18
+       3.3.1.  Base Identifier . . . . . . . . . . . . . . . . . . .  18
+       3.3.2.  Value Representation  . . . . . . . . . . . . . . . .  18
+       3.3.3.  Intended Semantics and Use  . . . . . . . . . . . . .  18
+       3.3.4.  Cost-Context Specification Considerations . . . . . .  20
+     3.4.  Cost Metric: Loss Rate (lossrate) . . . . . . . . . . . .  20
+       3.4.1.  Base Identifier . . . . . . . . . . . . . . . . . . .  20
+       3.4.2.  Value Representation  . . . . . . . . . . . . . . . .  20
+       3.4.3.  Intended Semantics and Use  . . . . . . . . . . . . .  20
+       3.4.4.  Cost-Context Specification Considerations . . . . . .  22
+     3.5.  Cost Metric: Hop Count (hopcount) . . . . . . . . . . . .  22
+       3.5.1.  Base Identifier . . . . . . . . . . . . . . . . . . .  22
+       3.5.2.  Value Representation  . . . . . . . . . . . . . . . .  22
+       3.5.3.  Intended Semantics and Use  . . . . . . . . . . . . .  22
+       3.5.4.  Cost-Context Specification Considerations . . . . . .  24
+   4.  Throughput/Bandwidth Performance Metrics  . . . . . . . . . .  24
+     4.1.  Cost Metric: TCP Throughput (tput)  . . . . . . . . . . .  24
+       4.1.1.  Base Identifier . . . . . . . . . . . . . . . . . . .  24
+       4.1.2.  Value Representation  . . . . . . . . . . . . . . . .  24
+       4.1.3.  Intended Semantics and Use  . . . . . . . . . . . . .  25
+       4.1.4.  Cost-Context Specification Considerations . . . . . .  26
+     4.2.  Cost Metric: Residual Bandwidth (bw-residual) . . . . . .  27
+       4.2.1.  Base Identifier . . . . . . . . . . . . . . . . . . .  27
+       4.2.2.  Value Representation  . . . . . . . . . . . . . . . .  27
+       4.2.3.  Intended Semantics and Use  . . . . . . . . . . . . .  27
+       4.2.4.  Cost-Context Specification Considerations . . . . . .  29
+     4.3.  Cost Metric: Available Bandwidth (bw-available) . . . . .  29
+       4.3.1.  Base Identifier . . . . . . . . . . . . . . . . . . .  29
+       4.3.2.  Value Representation  . . . . . . . . . . . . . . . .  29
+       4.3.3.  Intended Semantics and Use  . . . . . . . . . . . . .  29
+       4.3.4.  Cost-Context Specification Considerations . . . . . .  31
+   5.  Operational Considerations  . . . . . . . . . . . . . . . . .  31
+     5.1.  Source Considerations . . . . . . . . . . . . . . . . . .  31
+     5.2.  Metric Timestamp Consideration  . . . . . . . . . . . . .  31
+     5.3.  Backward Compatibility Considerations . . . . . . . . . .  32
+     5.4.  Computation Considerations  . . . . . . . . . . . . . . .  32
+       5.4.1.  Configuration Parameters Considerations . . . . . . .  32
+       5.4.2.  Aggregation Computation Considerations  . . . . . . .  33
+   6.  Security Considerations . . . . . . . . . . . . . . . . . . .  33
+   7.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .  34
+   8.  Acknowledgments . . . . . . . . . . . . . . . . . . . . . . .  35
+   9.  References  . . . . . . . . . . . . . . . . . . . . . . . . .  35
+     9.1.  Normative References  . . . . . . . . . . . . . . . . . .  35
+     9.2.  Informative References  . . . . . . . . . . . . . . . . .  37
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  38
 
 
 
 
 
-Wu, et al.             Expires September 17, 2022               [Page 3]
+Wu, et al.             Expires September 21, 2022               [Page 3]
 
 Internet-Draft        ALTO Performance Cost Metrics           March 2022
 
@@ -221,7 +221,7 @@ Internet-Draft        ALTO Performance Cost Metrics           March 2022
 
 
 
-Wu, et al.             Expires September 17, 2022               [Page 4]
+Wu, et al.             Expires September 21, 2022               [Page 4]
 
 Internet-Draft        ALTO Performance Cost Metrics           March 2022
 
@@ -277,7 +277,7 @@ Internet-Draft        ALTO Performance Cost Metrics           March 2022
 
 
 
-Wu, et al.             Expires September 17, 2022               [Page 5]
+Wu, et al.             Expires September 21, 2022               [Page 5]
 
 Internet-Draft        ALTO Performance Cost Metrics           March 2022
 
@@ -333,7 +333,7 @@ Internet-Draft        ALTO Performance Cost Metrics           March 2022
 
 
 
-Wu, et al.             Expires September 17, 2022               [Page 6]
+Wu, et al.             Expires September 21, 2022               [Page 6]
 
 Internet-Draft        ALTO Performance Cost Metrics           March 2022
 
@@ -389,7 +389,7 @@ Internet-Draft        ALTO Performance Cost Metrics           March 2022
 
 
 
-Wu, et al.             Expires September 17, 2022               [Page 7]
+Wu, et al.             Expires September 21, 2022               [Page 7]
 
 Internet-Draft        ALTO Performance Cost Metrics           March 2022
 
@@ -445,7 +445,7 @@ Internet-Draft        ALTO Performance Cost Metrics           March 2022
 
 
 
-Wu, et al.             Expires September 17, 2022               [Page 8]
+Wu, et al.             Expires September 21, 2022               [Page 8]
 
 Internet-Draft        ALTO Performance Cost Metrics           March 2022
 
@@ -501,7 +501,7 @@ Internet-Draft        ALTO Performance Cost Metrics           March 2022
 
 
 
-Wu, et al.             Expires September 17, 2022               [Page 9]
+Wu, et al.             Expires September 21, 2022               [Page 9]
 
 Internet-Draft        ALTO Performance Cost Metrics           March 2022
 
@@ -557,7 +557,7 @@ Internet-Draft        ALTO Performance Cost Metrics           March 2022
 
 
 
-Wu, et al.             Expires September 17, 2022              [Page 10]
+Wu, et al.             Expires September 21, 2022              [Page 10]
 
 Internet-Draft        ALTO Performance Cost Metrics           March 2022
 
@@ -613,7 +613,7 @@ Internet-Draft        ALTO Performance Cost Metrics           March 2022
 
 
 
-Wu, et al.             Expires September 17, 2022              [Page 11]
+Wu, et al.             Expires September 21, 2022              [Page 11]
 
 Internet-Draft        ALTO Performance Cost Metrics           March 2022
 
@@ -669,7 +669,7 @@ Internet-Draft        ALTO Performance Cost Metrics           March 2022
 
 
 
-Wu, et al.             Expires September 17, 2022              [Page 12]
+Wu, et al.             Expires September 21, 2022              [Page 12]
 
 Internet-Draft        ALTO Performance Cost Metrics           March 2022
 
@@ -725,7 +725,63 @@ Internet-Draft        ALTO Performance Cost Metrics           March 2022
 
 
 
-Wu, et al.             Expires September 17, 2022              [Page 13]
+Wu, et al.             Expires September 21, 2022              [Page 13]
+
+Internet-Draft        ALTO Performance Cost Metrics           March 2022
+
+
+   Example 1a below shows an example that is similar to Example 1, but
+   for IPv6.
+
+   Example 1a: Delay value on source-destination endpoint pairs for IPv6
+
+   POST /endpointcost/lookup HTTP/1.1
+   Host: alto.example.com
+   Content-Length: 252
+   Content-Type: application/alto-endpointcostparams+json
+   Accept:
+     application/alto-endpointcost+json,application/alto-error+json
+
+   {
+     "cost-type": {
+       "cost-mode":   "numerical",
+       "cost-metric": "delay-ow"
+     },
+     "endpoints": {
+       "srcs": [
+         "ipv6:2001:db8:100::1"
+       ],
+       "dsts": [
+         "ipv6:2001:db8:100::2",
+         "ipv6:2001:db8:100::3"
+       ]
+     }
+   }
+
+   HTTP/1.1 200 OK
+   Content-Length: 257
+   Content-Type: application/alto-endpointcost+json
+
+   {
+     "meta": {
+       "cost-type": {
+         "cost-mode":   "numerical",
+         "cost-metric": "delay-ow"
+       }
+     },
+     "endpoint-cost-map": {
+       "ipv6:2001:db8:100::1": {
+         "ipv6:2001:db8:100::2": 10,
+         "ipv6:2001:db8:100::3": 20
+       }
+     }
+   }
+
+
+
+
+
+Wu, et al.             Expires September 21, 2022              [Page 14]
 
 Internet-Draft        ALTO Performance Cost Metrics           March 2022
 
@@ -781,7 +837,7 @@ Internet-Draft        ALTO Performance Cost Metrics           March 2022
 
 
 
-Wu, et al.             Expires September 17, 2022              [Page 14]
+Wu, et al.             Expires September 21, 2022              [Page 15]
 
 Internet-Draft        ALTO Performance Cost Metrics           March 2022
 
@@ -837,7 +893,7 @@ Internet-Draft        ALTO Performance Cost Metrics           March 2022
 
 
 
-Wu, et al.             Expires September 17, 2022              [Page 15]
+Wu, et al.             Expires September 21, 2022              [Page 16]
 
 Internet-Draft        ALTO Performance Cost Metrics           March 2022
 
@@ -893,7 +949,7 @@ Internet-Draft        ALTO Performance Cost Metrics           March 2022
 
 
 
-Wu, et al.             Expires September 17, 2022              [Page 16]
+Wu, et al.             Expires September 21, 2022              [Page 17]
 
 Internet-Draft        ALTO Performance Cost Metrics           March 2022
 
@@ -949,7 +1005,7 @@ Internet-Draft        ALTO Performance Cost Metrics           March 2022
 
 
 
-Wu, et al.             Expires September 17, 2022              [Page 17]
+Wu, et al.             Expires September 21, 2022              [Page 18]
 
 Internet-Draft        ALTO Performance Cost Metrics           March 2022
 
@@ -1005,7 +1061,7 @@ Internet-Draft        ALTO Performance Cost Metrics           March 2022
 
 
 
-Wu, et al.             Expires September 17, 2022              [Page 18]
+Wu, et al.             Expires September 21, 2022              [Page 19]
 
 Internet-Draft        ALTO Performance Cost Metrics           March 2022
 
@@ -1061,7 +1117,7 @@ Internet-Draft        ALTO Performance Cost Metrics           March 2022
 
 
 
-Wu, et al.             Expires September 17, 2022              [Page 19]
+Wu, et al.             Expires September 21, 2022              [Page 20]
 
 Internet-Draft        ALTO Performance Cost Metrics           March 2022
 
@@ -1117,7 +1173,7 @@ Internet-Draft        ALTO Performance Cost Metrics           March 2022
 
 
 
-Wu, et al.             Expires September 17, 2022              [Page 20]
+Wu, et al.             Expires September 21, 2022              [Page 21]
 
 Internet-Draft        ALTO Performance Cost Metrics           March 2022
 
@@ -1173,7 +1229,7 @@ Internet-Draft        ALTO Performance Cost Metrics           March 2022
 
 
 
-Wu, et al.             Expires September 17, 2022              [Page 21]
+Wu, et al.             Expires September 21, 2022              [Page 22]
 
 Internet-Draft        ALTO Performance Cost Metrics           March 2022
 
@@ -1229,7 +1285,7 @@ Internet-Draft        ALTO Performance Cost Metrics           March 2022
 
 
 
-Wu, et al.             Expires September 17, 2022              [Page 22]
+Wu, et al.             Expires September 21, 2022              [Page 23]
 
 Internet-Draft        ALTO Performance Cost Metrics           March 2022
 
@@ -1285,7 +1341,7 @@ Internet-Draft        ALTO Performance Cost Metrics           March 2022
 
 
 
-Wu, et al.             Expires September 17, 2022              [Page 23]
+Wu, et al.             Expires September 21, 2022              [Page 24]
 
 Internet-Draft        ALTO Performance Cost Metrics           March 2022
 
@@ -1341,7 +1397,7 @@ Internet-Draft        ALTO Performance Cost Metrics           March 2022
 
 
 
-Wu, et al.             Expires September 17, 2022              [Page 24]
+Wu, et al.             Expires September 21, 2022              [Page 25]
 
 Internet-Draft        ALTO Performance Cost Metrics           March 2022
 
@@ -1397,7 +1453,7 @@ Internet-Draft        ALTO Performance Cost Metrics           March 2022
 
 
 
-Wu, et al.             Expires September 17, 2022              [Page 25]
+Wu, et al.             Expires September 21, 2022              [Page 26]
 
 Internet-Draft        ALTO Performance Cost Metrics           March 2022
 
@@ -1453,7 +1509,7 @@ Internet-Draft        ALTO Performance Cost Metrics           March 2022
 
 
 
-Wu, et al.             Expires September 17, 2022              [Page 26]
+Wu, et al.             Expires September 21, 2022              [Page 27]
 
 Internet-Draft        ALTO Performance Cost Metrics           March 2022
 
@@ -1509,7 +1565,7 @@ Internet-Draft        ALTO Performance Cost Metrics           March 2022
 
 
 
-Wu, et al.             Expires September 17, 2022              [Page 27]
+Wu, et al.             Expires September 21, 2022              [Page 28]
 
 Internet-Draft        ALTO Performance Cost Metrics           March 2022
 
@@ -1565,7 +1621,7 @@ Internet-Draft        ALTO Performance Cost Metrics           March 2022
 
 
 
-Wu, et al.             Expires September 17, 2022              [Page 28]
+Wu, et al.             Expires September 21, 2022              [Page 29]
 
 Internet-Draft        ALTO Performance Cost Metrics           March 2022
 
@@ -1621,7 +1677,7 @@ Internet-Draft        ALTO Performance Cost Metrics           March 2022
 
 
 
-Wu, et al.             Expires September 17, 2022              [Page 29]
+Wu, et al.             Expires September 21, 2022              [Page 30]
 
 Internet-Draft        ALTO Performance Cost Metrics           March 2022
 
@@ -1677,7 +1733,7 @@ Internet-Draft        ALTO Performance Cost Metrics           March 2022
 
 
 
-Wu, et al.             Expires September 17, 2022              [Page 30]
+Wu, et al.             Expires September 21, 2022              [Page 31]
 
 Internet-Draft        ALTO Performance Cost Metrics           March 2022
 
@@ -1733,7 +1789,7 @@ Internet-Draft        ALTO Performance Cost Metrics           March 2022
 
 
 
-Wu, et al.             Expires September 17, 2022              [Page 31]
+Wu, et al.             Expires September 21, 2022              [Page 32]
 
 Internet-Draft        ALTO Performance Cost Metrics           March 2022
 
@@ -1789,7 +1845,7 @@ Internet-Draft        ALTO Performance Cost Metrics           March 2022
 
 
 
-Wu, et al.             Expires September 17, 2022              [Page 32]
+Wu, et al.             Expires September 21, 2022              [Page 33]
 
 Internet-Draft        ALTO Performance Cost Metrics           March 2022
 
@@ -1845,7 +1901,7 @@ Internet-Draft        ALTO Performance Cost Metrics           March 2022
 
 
 
-Wu, et al.             Expires September 17, 2022              [Page 33]
+Wu, et al.             Expires September 21, 2022              [Page 34]
 
 Internet-Draft        ALTO Performance Cost Metrics           March 2022
 
@@ -1901,7 +1957,7 @@ Internet-Draft        ALTO Performance Cost Metrics           March 2022
 
 
 
-Wu, et al.             Expires September 17, 2022              [Page 34]
+Wu, et al.             Expires September 21, 2022              [Page 35]
 
 Internet-Draft        ALTO Performance Cost Metrics           March 2022
 
@@ -1957,7 +2013,7 @@ Internet-Draft        ALTO Performance Cost Metrics           March 2022
 
 
 
-Wu, et al.             Expires September 17, 2022              [Page 35]
+Wu, et al.             Expires September 21, 2022              [Page 36]
 
 Internet-Draft        ALTO Performance Cost Metrics           March 2022
 
@@ -2013,7 +2069,7 @@ Internet-Draft        ALTO Performance Cost Metrics           March 2022
 
 
 
-Wu, et al.             Expires September 17, 2022              [Page 36]
+Wu, et al.             Expires September 21, 2022              [Page 37]
 
 Internet-Draft        ALTO Performance Cost Metrics           March 2022
 
@@ -2069,7 +2125,7 @@ Authors' Addresses
 
 
 
-Wu, et al.             Expires September 17, 2022              [Page 37]
+Wu, et al.             Expires September 21, 2022              [Page 38]
 
 Internet-Draft        ALTO Performance Cost Metrics           March 2022
 
@@ -2125,4 +2181,4 @@ Internet-Draft        ALTO Performance Cost Metrics           March 2022
 
 
 
-Wu, et al.             Expires September 17, 2022              [Page 38]
+Wu, et al.             Expires September 21, 2022              [Page 39]
