@@ -683,7 +683,7 @@ Content-Type: application/alto-endpointcost+json
 </artwork>
           </figure>
 
-          <t>Comment: Since the "cost-type" does not include the "cost-source"
+          <t>Note that since the "cost-type" does not include the "cost-source"
           field, the values are based on "estimation". Since the identifier
           does not include the statistical operator string component, the
           values will represent median values.</t>

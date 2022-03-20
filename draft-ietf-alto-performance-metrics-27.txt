@@ -718,7 +718,7 @@ Internet-Draft        ALTO Performance Cost Metrics           March 2022
      }
    }
 
-   Comment: Since the "cost-type" does not include the "cost-source"
+   Note that since the "cost-type" does not include the "cost-source"
    field, the values are based on "estimation".  Since the identifier
    does not include the statistical operator string component, the
    values will represent median values.
