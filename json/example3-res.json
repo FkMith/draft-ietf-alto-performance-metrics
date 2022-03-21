@@ -1,0 +1,14 @@
+{
+  "meta": {
+    "cost-type": {
+      "cost-mode":   "numerical",
+      "cost-metric": "delay-variation"
+    }
+  },
+  "endpoint-cost-map": {
+    "ipv4:192.0.2.2": {
+      "ipv4:192.0.2.89":    0,
+      "ipv4:198.51.100.34": 1
+    }
+  }
+}

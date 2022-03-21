@@ -1,0 +1,15 @@
+{
+  "cost-type": {
+    "cost-mode":   "numerical",
+    "cost-metric": "delay-ow"
+  },
+  "endpoints": {
+    "srcs": [
+      "ipv6:2001:db8:100::1"
+    ],
+    "dsts": [
+      "ipv6:2001:db8:100::2",
+      "ipv6:2001:db8:100::3"
+    ]
+  }
+}

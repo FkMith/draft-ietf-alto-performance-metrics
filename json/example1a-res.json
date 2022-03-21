@@ -1,0 +1,14 @@
+{
+  "meta": {
+    "cost-type": {
+      "cost-mode":   "numerical",
+      "cost-metric": "delay-ow"
+    }
+  },
+  "endpoint-cost-map": {
+    "ipv6:2001:db8:100::1": {
+      "ipv6:2001:db8:100::2": 10,
+      "ipv6:2001:db8:100::3": 20
+    }
+  }
+}

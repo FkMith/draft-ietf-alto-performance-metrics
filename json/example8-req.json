@@ -1,0 +1,15 @@
+{
+  "cost-type": { 
+    "cost-mode":   "numerical",
+    "cost-metric": "bw-available"
+  },
+  "endpoints": {
+    "srcs": [
+      "ipv4:192.0.2.2"
+    ],
+    "dsts": [
+      "ipv4:192.0.2.89",
+      "ipv4:198.51.100.34"
+    ]
+  }
+}
