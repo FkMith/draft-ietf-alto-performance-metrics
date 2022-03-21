@@ -1,5 +1,5 @@
 XML2RFC := xml2rfc
-TARGET := draft-ietf-alto-performance-metrics-27.xml
+TARGET := draft-ietf-alto-performance-metrics-28.xml
 OPEN := gnome-open
 all:
 	$(XML2RFC) $(TARGET)
