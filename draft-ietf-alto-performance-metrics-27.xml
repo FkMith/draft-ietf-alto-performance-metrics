@@ -198,23 +198,23 @@
 | Metric             | Definition  |  Semantics Based On            |
 |                    | in this doc |                                |
 +--------------------+-------------+--------------------------------+
-| One-way Delay      | Section 3.1 | Base: [RFC7471,8570,8571]      |
+| One-way Delay      | Section 4.1 | Base: [RFC7471,8570,8571]      |
 |                    |             |  sum Unidirectional Delay      |
-| Round-trip Delay   | Section 3.2 | Base: Sum of two directions    |
+| Round-trip Delay   | Section 4.2 | Base: Sum of two directions    |
 |                    |             |  from above                    |
-| Delay Variation    | Section 3.3 | Base: [RFC7471,8570,8571]      |
+| Delay Variation    | Section 4.3 | Base: [RFC7471,8570,8571]      |
 |                    |             |  sum of Unidirectional Delay   |
 |                    |             |         Variation              |
-| Loss Rate          | Section 3.4 | Base: [RFC7471,8570,8571]      |
+| Loss Rate          | Section 4.4 | Base: [RFC7471,8570,8571]      |
 |                    |             |  aggr Unidirectional Link Loss |
-| Residual Bandwidth | Section 4.2 | Base: [RFC7471,8570,8571]      |
+| Residual Bandwidth | Section 5.2 | Base: [RFC7471,8570,8571]      |
 |                    |             |  min Unidirectional Residual BW|
-| Available Bandwidth| Section 4.3 | Base: [RFC7471,8570,8571]      |
+| Available Bandwidth| Section 5.3 | Base: [RFC7471,8570,8571]      |
 |                    |             |  min Unidirectional Avail. BW  |
 |                    |             |                                |
-| TCP Throughput     | Section 4.1 | [I-D.ietf-tcpm-rfc8312bis]     |
+| TCP Throughput     | Section 5.1 | [I-D.ietf-tcpm-rfc8312bis]     |
 |                    |             |                                |
-| Hop Count          | Section 3.5 | [RFC7285]                      |
+| Hop Count          | Section 4.5 | [RFC7285]                      |
 +--------------------+-------------+--------------------------------+
    Table 1. Cost Metrics Defined in this Document.
         ]]></artwork>
@@ -263,10 +263,10 @@
       Delay, Round-trip Delay, Delay Variation, Loss Rate, and Hop Count), and
       those related to bandwidth/throughput (Residual bandwidth, and Available
       Bandwidth, and TCP throughput). These two categories are defined in
-      <xref target="secpktmetrics"></xref> and <xref
-      target="secbwmetrics"></xref> respectively. Note that all metrics except
-      Round-trip Delay are unidirectional. An ALTO client will need to query
-      both directions if needed.</t>
+      Sections <xref format="counter" target="secpktmetrics"></xref> and <xref
+      format="counter" target="secbwmetrics"></xref> respectively. Note that
+      all metrics except Round-trip Delay are unidirectional. An ALTO client
+      will need to query both directions if needed.</t>
 
       <t>The purpose of this document is to ensure proper usage of these 8
       performance metrics in the context of ALTO. This document follows the
@@ -406,7 +406,7 @@
         <t>As mentioned above, this document defines three values for
         "cost-source": "nominal", "sla", and "estimation". The "cost-source"
         field of the "cost-context" field MUST be one registered in "ALTO Cost
-        Source Registry" (Section 7).</t>
+        Source" registry (Section 8).</t>
 
         <t>The "nominal" category indicates that the metric value is
         statically configured by the underlying devices. Not all metrics have
@@ -429,8 +429,8 @@
         target="RFC5357"></xref>), and measurement frameworks (e.g., IPPM),
         with corresponding operational issues. An illustration of potential
         information flows used for estimating these metrics is shown in Figure
-        1 below. <xref target="secopconsider"></xref> discusses in more detail
-        the operational issues and how a network may address them. <figure>
+        1. <xref target="secopconsider"></xref> discusses in more detail the
+        operational issues and how a network may address them. <figure>
             <artwork><![CDATA[
   +--------+   +--------+  +--------+
   | Client |   | Client |  | Client |
@@ -856,7 +856,7 @@ Content-Type: application/alto-endpointcost+json
           destination. The base semantics is that it is the sum of one-way
           delay from the source to the destination and the one-way delay from
           the destination back to the source, where the one-way delay is
-          defined in Section 3.1. A non-normative reference definition of
+          defined in Section 4.1. A non-normative reference definition of
           end-to-end round-trip delay is <xref target="RFC2681"></xref>. The
           spatial aggregation level is specified in the query context (e.g.,
           PID to PID, or endpoint to endpoint).</t>
@@ -1019,7 +1019,7 @@ Content-Type: application/alto-endpointcost+json
           delay variation (also called delay jitter)) with respect to the
           minimum delay observed on the stream over the one-way delay from the
           specified source and destination, where the one-way delay is defined
-          in Section 3.1. A non-normative reference definition of end-to-end
+          in Section 4.1. A non-normative reference definition of end-to-end
           one-way delay variation is <xref target="RFC3393"></xref>. Note that
           <xref target="RFC3393"></xref> allows the specification of a generic
           selection function F to unambiguously define the two packets
@@ -1301,9 +1301,9 @@ Content-Type: application/alto-endpointcost+json
       </section>
 
       <section title="Cost Metric: Hop Count (hopcount)">
-        <t>The hopcount metric is mentioned in <xref target="RFC7285"></xref>
-        Section 9.2.3 as an example. This section further clarifies its
-        properties.</t>
+        <t>The hopcount metric is mentioned in Section 9.2.3 of <xref
+        target="RFC7285"></xref> as an example. This section further clarifies
+        its properties.</t>
 
         <!--
         <t><list style="hanging">
@@ -1729,7 +1729,7 @@ Content-Type: application/alto-endpointcost+json
           </t>
         -->
 
-          <t>"estimation": See the "estimation" entry in Section 3.1.4 on
+          <t>"estimation": See the "estimation" entry in Section 4.1.4 on
           aggregation of routing protocol link metrics. The current ("cur")
           residual bandwidth of a path is the minimal of the residual
           bandwidth of all links on the path.</t>
@@ -1867,7 +1867,7 @@ Content-Type: application/alto-endpointcost+json
           </t>
         -->
 
-          <t>"estimation": See the "estimation" entry in Section 3.1.4 on
+          <t>"estimation": See the "estimation" entry in Section 4.1.4 on
           aggregation of routing protocol link metrics. The current ("cur")
           available bandwidth of a path is the minimum of the available
           bandwidth of all links on the path.</t>
@@ -1883,8 +1883,8 @@ Content-Type: application/alto-endpointcost+json
       <t>The exact measurement infrastructure, measurement condition, and
       computation algorithms can vary from different networks, and are outside
       the scope of this document. Both the ALTO server and the ALTO clients,
-      however, need to be cognizant of the operational issues discussed
-      below.</t>
+      however, need to be cognizant of the operational issues discussed in the
+      following sub-sections.</t>
 
       <t>Also, the performance metrics specified in this document are similar,
       in that they may use similar data sources and have similar issues in
@@ -1996,17 +1996,16 @@ Content-Type: application/alto-endpointcost+json
       considerations beyond those in Section 15 of the base ALTO specification
       <xref target="RFC7285"></xref>.</t>
 
-      <t>However, concerns addressed in Sections "15.1 Authenticity and
-      Integrity of ALTO Information", "15.2 Potential Undesirable Guidance
-      from Authenticated ALTO Information", and "15.3 Confidentiality of ALTO
-      Information" remain of utmost importance. Indeed, TE performance is
-      highly sensitive ISP information; therefore, sharing TE metric values in
-      numerical mode requires full mutual confidence between the entities
-      managing the ALTO server and the ALTO client. ALTO servers will most
-      likely distribute numerical TE performance to ALTO clients under strict
-      and formal mutual trust agreements. On the other hand, ALTO clients must
-      be cognizant on the risks attached to such information that they would
-      have acquired outside formal conditions of mutual trust.</t>
+      <t>However, concerns addressed in Sections 15.1, 15.2, and 15.3 of <xref
+      target="RFC7285"></xref> remain of utmost importance. Indeed, Traffic
+      Engineering (TE) performance is highly sensitive ISP information;
+      therefore, sharing TE metric values in numerical mode requires full
+      mutual confidence between the entities managing the ALTO server and the
+      ALTO client. ALTO servers will most likely distribute numerical TE
+      performance to ALTO clients under strict and formal mutual trust
+      agreements. On the other hand, ALTO clients must be cognizant on the
+      risks attached to such information that they would have acquired outside
+      formal conditions of mutual trust.</t>
 
       <t>To mitigate confidentiality risks during information transport of TE
       performance metrics, the operator should address the risk of ALTO
@@ -2035,14 +2034,14 @@ Content-Type: application/alto-endpointcost+json
 +-----------------+----------------------------+
 | Identifier      | Intended Semantics         |
 +-----------------+----------------------------+
-| delay-ow        | Section 3.1 of [RFCXXX]    |
-| delay-rt        | Section 3.2 of [RFCXXX]    |
-| delay-variation | Section 3.3 of [RFCXXX]    |
-| lossrate        | Section 3.4 of [RFCXXX]    |
-| hopcount        | Section 3.5 of [RFCXXX]    |
-| tput            | Section 4.1 of [RFCXXX]    |
-| bw-residual     | Section 4.2 of [RFCXXX]    |
-| bw-available    | Section 4.3 of [RFCXXX]    |
+| delay-ow        | Section 4.1 of [RFCXXX]    |
+| delay-rt        | Section 4.2 of [RFCXXX]    |
+| delay-variation | Section 4.3 of [RFCXXX]    |
+| lossrate        | Section 4.4 of [RFCXXX]    |
+| hopcount        | Section 4.5 of [RFCXXX]    |
+| tput            | Section 5.1 of [RFCXXX]    |
+| bw-residual     | Section 5.2 of [RFCXXX]    |
+| bw-available    | Section 5.3 of [RFCXXX]    |
 +-----------------+----------------------------+
 ]]></artwork>
       </figure>
@@ -2069,7 +2068,7 @@ Content-Type: application/alto-endpointcost+json
       cost source follow the same procedure.</t>
 
       <t>Registered ALTO address type identifiers MUST conform to the
-      syntactical requirements specified in Section 2.1. Identifiers are to be
+      syntactical requirements specified in Section 3.1. Identifiers are to be
       recorded and displayed as strings.</t>
 
       <t>Requests to add a new value to the registry MUST include the
@@ -2088,10 +2087,10 @@ Content-Type: application/alto-endpointcost+json
           cost source type.</t>
         </list></t>
 
-      <t>This specification requests registration of the identifiers -
+      <t>This specification requests registration of the identifiers
       "nominal", "sla", and "estimation" listed in the table below. Semantics
-      for the these are documented in Section 2.1, and security considerations
-      are documented in Section 6.</t>
+      for the these are documented in Section 3.1, and security considerations
+      are documented in Section 7.</t>
 
       <figure>
         <artwork><![CDATA[
@@ -2099,13 +2098,13 @@ Content-Type: application/alto-endpointcost+json
 | Identifier | Intended Semantics               | Security       |
 |            |                                  | Considerations |
 +------------+----------------------------------+----------------+
-| nominal    | Values in nominal cases;         | Section 6 of   |
-|            |  Section 2.1 of [RFCXXX]         |     [RFCXXX]   |
-| sla        | Values reflecting service level  | Section 6 of   |
-|            | agreement; Section 2.1 of        |     [RFCXXX]   |
+| nominal    | Values in nominal cases;         | Section 7 of   |
+|            |  Section 3.1 of [RFCXXX]         |     [RFCXXX]   |
+| sla        | Values reflecting service level  | Section 7 of   |
+|            | agreement; Section 3.1 of        |     [RFCXXX]   |
 |            |   [RFCXXXX]                      |                |
-| estimation | Values by estimation;            | Section 6 of   |
-|            |  Section 2.1 of [RFCXXX]         |     [RFCXXX]   |
+| estimation | Values by estimation;            | Section 7 of   |
+|            |  Section 3.1 of [RFCXXX]         |     [RFCXXX]   |
 +------------+----------------------------------+----------------+
 ]]></artwork>
       </figure>
