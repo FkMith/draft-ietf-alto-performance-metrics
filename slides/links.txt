@@ -1,0 +1,5 @@
+- For table listing metrics, see
+https://docs.google.com/spreadsheets/d/13COBUEDNlA_Fb8abg7nRTNq4pvClTq7EPg5Ef3-_bpM/edit?usp=sharing
+
+- For version diff, see 
+https://tools.ietf.org/rfcdiff?url1=https://www.ietf.org/archive/id/draft-ietf-alto-performance-metrics-20.txt&url2=https://www.ietf.org/archive/id/draft-ietf-alto-performance-metrics-28.txt
