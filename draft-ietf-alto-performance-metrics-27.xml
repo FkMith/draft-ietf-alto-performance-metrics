@@ -220,7 +220,7 @@
 | Available Bandwidth| Section 4.3 | Base: [RFC7471,8570,8571]      |
 |                    |             |  min Unidirectional Avail. BW  |
 |                    |             |                                |
-| TCP Throughput     | Section 4.1 | [RFC8312bis]                   |
+| TCP Throughput     | Section 4.1 | [I-D.ietf-tcpm-rfc8312bis]     |
 |                    |             |                                |
 | Hop Count          | Section 3.5 | [RFC7285]                      |
 +--------------------+-------------+--------------------------------+
@@ -280,7 +280,7 @@
 
       <t>The definitions of the intended semantics of the metrics tend to be
       coarse-grained, for guidance only, and they may work well for ALTO. On
-      the other hand, a performance measurement framework, such as the [IPPM]
+      the other hand, a performance measurement framework, such as the IPPM
       framework, may provide more details in defining a performance metric.
       This document introduces a mechanism called "cost-context" to provide
       additional details, when they are available; see <xref
@@ -2006,7 +2006,7 @@ Content-Type: application/alto-endpointcost+json
       "Authentication and Encryption" (Section 8.3.5 of <xref
       target="RFC7285"/>) specifies that "ALTO Server implementations as well
       as ALTO Client implementations MUST support the "https" URI scheme of
-      <xref target="RFC2818"/> and Transport Layer Security (TLS) of <xref
+      <xref target="RFC7230"/> and Transport Layer Security (TLS) of <xref
       target="RFC8446"/>".</t>
     </section>
 
@@ -2096,7 +2096,9 @@ Content-Type: application/alto-endpointcost+json
       the highly informative, thorough AD reviews and comments. We thank
       Christian Amsüss, Elwyn Davies, Haizhou Du, Kai Gao, Geng Li, Lili Liu,
       Danny Alex Lachos Perez, and Brian Trammell for the reviews and
-      comments.</t>
+      comments. We thank Benjamin Kaduk, Eric Kline, Francesca Palombini, Lars Eggert, 
+      Martin Vigoureux, Murrary Kucherawy, Roman Danyliw, Zaheduzzaman Sarker, Éric Vyncke
+      for discussions and comments that improve this document. </t>
     </section>
   </middle>
 
@@ -2134,61 +2136,52 @@ Content-Type: application/alto-endpointcost+json
       <?rfc include="reference.I-D.ietf-idr-te-pm-bgp.xml"?>
 
       <?rfc include="reference.I-D.ietf-ippm-initial-registry.xml"?>
-    -->
-
-      <?rfc include="reference.RFC.2119.xml"?>
-
-      <!-- requirements words -->
 
       <?rfc include="reference.RFC.2818.xml"?>
 
-      <!-- https -->
+    -->
 
+      <!-- requirements words -->
+      <?rfc include="reference.RFC.2119.xml"?>      
+
+      <!-- TE for OSPF -->
       <?rfc include="reference.RFC.3630.xml"?>
 
-      <!-- TE base -->
-
+      <!-- TE for ISIS -->
       <?rfc include="reference.RFC.5305.xml"?>
 
-      <!-- TE base -->
-
+      <!-- guidelines on new metrics -->
       <?rfc include="reference.RFC.6390.xml"?>
 
-      <!-- guidelines on new metrics -->
-
-      <?rfc include="reference.RFC.7285.xml"?>
+      <!-- https change rfc 2818 to 7230 as 2818 is informational-->
+      <?rfc include="reference.RFC.7230.xml"?>
 
       <!-- alto base -->
-
-      <?rfc include="reference.RFC.7471.xml"?>
-
+      <?rfc include="reference.RFC.7285.xml"?>
+      
       <!-- OSPF TE metrics -->
-
-      <?rfc include="reference.RFC.8126.xml"?>
-
+      <?rfc include="reference.RFC.7471.xml"?>
+      
       <!-- iana -->
-
+      <?rfc include="reference.RFC.8126.xml"?>
+      
+      <!-- requirement words -->
       <?rfc include="reference.RFC.8174.xml"?>
 
-      <?rfc include="reference.RFC.8259.xml"?>
-
       <!-- JSON Data-->
-
-      <?rfc include="reference.RFC.8446.xml"?>
+      <?rfc include="reference.RFC.8259.xml"?>      
 
       <!-- TLS 1.3 -->
-
-      <?rfc include="reference.RFC.8570.xml"?>
+      <?rfc include="reference.RFC.8446.xml"?>      
 
       <!-- ISIS TE -->
-
-      <?rfc include="reference.RFC.8571.xml"?>
+      <?rfc include="reference.RFC.8570.xml"?>      
 
       <!-- BGP-LS -->
-
-      <?rfc include="reference.RFC.8895.xml"?>
+      <?rfc include="reference.RFC.8571.xml"?>      
 
       <!-- ALTO SSE -->
+      <?rfc include="reference.RFC.8895.xml"?>      
 
       <reference anchor="IANA-IPPM">
         <front>

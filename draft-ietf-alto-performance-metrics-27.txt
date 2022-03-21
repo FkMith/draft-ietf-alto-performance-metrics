@@ -211,7 +211,7 @@ Internet-Draft        ALTO Performance Cost Metrics           March 2022
    | Available Bandwidth| Section 4.3 | Base: [RFC7471,8570,8571]      |
    |                    |             |  min Unidirectional Avail. BW  |
    |                    |             |                                |
-   | TCP Throughput     | Section 4.1 | [RFC8312bis]                   |
+   | TCP Throughput     | Section 4.1 | [I-D.ietf-tcpm-rfc8312bis]     |
    |                    |             |                                |
    | Hop Count          | Section 3.5 | [RFC7285]                      |
    +--------------------+-------------+--------------------------------+
@@ -285,7 +285,7 @@ Internet-Draft        ALTO Performance Cost Metrics           March 2022
    The definitions of the intended semantics of the metrics tend to be
    coarse-grained, for guidance only, and they may work well for ALTO.
    On the other hand, a performance measurement framework, such as the
-   [IPPM] framework, may provide more details in defining a performance
+   IPPM framework, may provide more details in defining a performance
    metric.  This document introduces a mechanism called "cost-context"
    to provide additional details, when they are available; see
    Section 2.
@@ -1840,7 +1840,7 @@ Internet-Draft        ALTO Performance Cost Metrics           March 2022
    metrics.  "Authentication and Encryption" (Section 8.3.5 of
    [RFC7285]) specifies that "ALTO Server implementations as well as
    ALTO Client implementations MUST support the "https" URI scheme of
-   [RFC2818] and Transport Layer Security (TLS) of [RFC8446]".
+   [RFC7230] and Transport Layer Security (TLS) of [RFC8446]".
 
 
 
@@ -1936,7 +1936,10 @@ Internet-Draft        ALTO Performance Cost Metrics           March 2022
    the highly informative, thorough AD reviews and comments.  We thank
    Christian Amsuess, Elwyn Davies, Haizhou Du, Kai Gao, Geng Li, Lili
    Liu, Danny Alex Lachos Perez, and Brian Trammell for the reviews and
-   comments.
+   comments.  We thank Benjamin Kaduk, Eric Kline, Francesca Palombini,
+   Lars Eggert, Martin Vigoureux, Murrary Kucherawy, Roman Danyliw,
+   Zaheduzzaman Sarker, Eric Vyncke for discussions and comments that
+   improve this document.
 
 9.  References
 
@@ -1948,10 +1951,7 @@ Internet-Draft        ALTO Performance Cost Metrics           March 2022
               for Fast and Long-Distance Networks", draft-ietf-tcpm-
               rfc8312bis-07 (work in progress), March 2022.
 
-   [IANA-IPPM]
-              IANA, , "Performance Metrics Registry,
-              https://www.iana.org/assignments/performance-metrics/
-              performance-metrics.xhtml".
+
 
 
 
@@ -1962,14 +1962,15 @@ Wu, et al.             Expires September 21, 2022              [Page 35]
 Internet-Draft        ALTO Performance Cost Metrics           March 2022
 
 
+   [IANA-IPPM]
+              IANA, , "Performance Metrics Registry,
+              https://www.iana.org/assignments/performance-metrics/
+              performance-metrics.xhtml".
+
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119, DOI 10.17487/
               RFC2119, March 1997, <https://www.rfc-editor.org/info/
               rfc2119>.
-
-   [RFC2818]  Rescorla, E., "HTTP Over TLS", RFC 2818, DOI 10.17487/
-              RFC2818, May 2000, <https://www.rfc-editor.org/info/
-              rfc2818>.
 
    [RFC3630]  Katz, D., Kompella, K., and D. Yeung, "Traffic Engineering
               (TE) Extensions to OSPF Version 2", RFC 3630, DOI
@@ -1984,6 +1985,11 @@ Internet-Draft        ALTO Performance Cost Metrics           March 2022
               Performance Metric Development", BCP 170, RFC 6390, DOI
               10.17487/RFC6390, October 2011, <https://www.rfc-
               editor.org/info/rfc6390>.
+
+   [RFC7230]  Fielding, R., Ed. and J. Reschke, Ed., "Hypertext Transfer
+              Protocol (HTTP/1.1): Message Syntax and Routing", RFC
+              7230, DOI 10.17487/RFC7230, June 2014, <https://www.rfc-
+              editor.org/info/rfc7230>.
 
    [RFC7285]  Alimi, R., Ed., Penno, R., Ed., Yang, Y., Ed., Kiesel, S.,
               Previdi, S., Roome, W., Shalunov, S., and R. Woundy,
@@ -2005,18 +2011,17 @@ Internet-Draft        ALTO Performance Cost Metrics           March 2022
               2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
               May 2017, <https://www.rfc-editor.org/info/rfc8174>.
 
-   [RFC8259]  Bray, T., Ed., "The JavaScript Object Notation (JSON) Data
-              Interchange Format", STD 90, RFC 8259, DOI 10.17487/
-              RFC8259, December 2017, <https://www.rfc-editor.org/info/
-              rfc8259>.
-
-
 
 
 Wu, et al.             Expires September 21, 2022              [Page 36]
 
 Internet-Draft        ALTO Performance Cost Metrics           March 2022
 
+
+   [RFC8259]  Bray, T., Ed., "The JavaScript Object Notation (JSON) Data
+              Interchange Format", STD 90, RFC 8259, DOI 10.17487/
+              RFC8259, December 2017, <https://www.rfc-editor.org/info/
+              rfc8259>.
 
    [RFC8446]  Rescorla, E., "The Transport Layer Security (TLS) Protocol
               Version 1.3", RFC 8446, DOI 10.17487/RFC8446, August 2018,
@@ -2062,17 +2067,16 @@ Internet-Draft        ALTO Performance Cost Metrics           March 2022
               10.17487/RFC2330, May 1998, <https://www.rfc-
               editor.org/info/rfc2330>.
 
-   [RFC2681]  Almes, G., Kalidindi, S., and M. Zekauskas, "A Round-trip
-              Delay Metric for IPPM", RFC 2681, DOI 10.17487/RFC2681,
-              September 1999, <https://www.rfc-editor.org/info/rfc2681>.
-
-
 
 
 Wu, et al.             Expires September 21, 2022              [Page 37]
 
 Internet-Draft        ALTO Performance Cost Metrics           March 2022
 
+
+   [RFC2681]  Almes, G., Kalidindi, S., and M. Zekauskas, "A Round-trip
+              Delay Metric for IPPM", RFC 2681, DOI 10.17487/RFC2681,
+              September 1999, <https://www.rfc-editor.org/info/rfc2681>.
 
    [RFC3393]  Demichelis, C. and P. Chimento, "IP Packet Delay Variation
               Metric for IP Performance Metrics (IPPM)", RFC 3393, DOI
@@ -2115,10 +2119,6 @@ Authors' Addresses
    Email: yry@cs.yale.edu
 
 
-   Young Lee
-   Samsung
-
-   Email: young.lee@gmail.com
 
 
 
@@ -2128,6 +2128,12 @@ Authors' Addresses
 Wu, et al.             Expires September 21, 2022              [Page 38]
 
 Internet-Draft        ALTO Performance Cost Metrics           March 2022
+
+
+   Young Lee
+   Samsung
+
+   Email: young.lee@gmail.com
 
 
    Dhruv Dhody
@@ -2154,12 +2160,6 @@ Internet-Draft        ALTO Performance Cost Metrics           March 2022
    Spain
 
    Email: luismiguel.contrerasmurillo@telefonica.com
-
-
-
-
-
-
 
 
 
